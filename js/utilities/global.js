@@ -7,6 +7,8 @@ export const local = storage.local;
 export const ELEMENTS = {
 	LIBRARY: document.getElementById("main-library"),
 	LIBRARY_HEADER: document.getElementById("library-header"),
+	LIBRARY_CURRENT: document.getElementById("library-current"),
+	LIBRARY_CURRENT_TITLE: document.getElementById("library-current-title"),
 	LIBRARY_CONTENTS: document.getElementById("library-contents"),
 	LIBRARY_BACK: document.getElementById("library-back"),
 	LIBRARY_ADD: document.getElementById("library-add"),

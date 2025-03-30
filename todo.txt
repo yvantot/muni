@@ -1,6 +1,10 @@
 Muni
-- Works as tab/newtab/popup
 
+BUGS
+--> When user added multiple modules/units/cards unedited and try to batch-edit, the update logic will turn other inputs to a placeholder
+    This can be easily fixed with 'reason' rendering logic
+
+- Works as tab/newtab/popup
 - Hover or click to reveal answer
 - Allow hints feature
 - Tags
@@ -11,7 +15,6 @@ Muni
 - AI Prompt for automated q/a input
 - Q/A input syntax
 - Custom rules when popup will appear
-
 
 - To implement
 - Export/Import data
