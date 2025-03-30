@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "Muni",
+    "author": "Jun Ivanne Dalman",
+    "version": "1.0.0",
+    "description": "Learn while you browse the internet",
+    "homepage_url": "https://yvantot.github.io/main",
+    "permissions": [
+        "storage",
+        "unlimitedStorage"
+    ],
+    "chrome_url_overrides": {
+        "newtab": "./html/main.html"
+    },
+    "action": {
+        "default_popup": "./html/main.html",
+        "default_title": "Muni"
+    }
+}

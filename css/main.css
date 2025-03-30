@@ -1,0 +1,419 @@
+/* === SETUPS === */
+@font-face {
+	font-family: Montserrat;
+	src: url("./../assets/Montserrat.ttf") format("truetype");
+}
+:root {
+	--bg-main-color: light-dark(hsl(0, 0%, 95%), hsl(0, 0%, 15%));
+	--bg-statistic-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
+	--bg-setting-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
+	--bg-session-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
+	--text-main-color: light-dark(hsl(0, 0%, 10%), hsl(0, 0%, 90%));
+	--card-color: light-dark(hsl(0, 0%, 100%), hsl(219, 30%, 15%));
+	--card-shadow: 0 5px 10px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 5%));
+	--container-shadow: 0 10px 10px -5px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 5%));
+	--right-shadow: 5px 0 5px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 8%));
+	--card-border-top: 2px solid hsla(0, 0%, 100%, 0.5);
+	--module-color: light-dark(hsl(0, 0%, 100%), hsl(0, 0%, 20%));
+	--gray: hsla(0, 0%, 50%, 0.5);
+	--green: hsl(145, 40%, 60%);
+	--red: hsl(0, 40%, 60%);
+	--level-1: hsl(0, 50%, 35%);
+	--level-2: hsl(25, 60%, 35%);
+	--level-3: hsl(60, 60%, 40%);
+	--level-4: hsl(90, 50%, 35%);
+	--level-5: hsl(130, 50%, 45%);
+}
+::selection {
+	background-color: light-dark(hsl(0, 0%, 90%), hsl(0, 0%, 10%));
+	color: light-dark(hsl(0, 0%, 10%), hsl(0, 0%, 90%));
+}
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	outline: none;
+	border: none;
+	background: none;
+	padding: 0;
+	line-height: 1.7;
+	color: var(--text-main-color);
+	font-family: Montserrat, sans-serif;
+	font-size: clamp(0.8rem, 16px, 1.3rem);
+	font-weight: normal;
+	font-style: normal;
+}
+button {
+	cursor: pointer;
+}
+/* === STYLING === */
+body {
+	background: var(--bg-main-color);
+	overflow: hidden;
+}
+.nav-features {
+	flex-grow: 1;
+	margin: 1rem 0;
+	border-radius: 1rem;
+	box-shadow: var(--container-shadow);
+	background: var(--bg-statistic-color);
+}
+#main-container {
+	display: flex;
+	justify-content: space-between;
+	height: 100dvh;
+	gap: 1rem;
+}
+#main-settings {
+	flex-basis: 5vw;
+	flex-grow: 0;
+}
+#main-library {
+	position: relative;
+	overflow: hidden;
+}
+#main-statistic {
+}
+#main-rules {
+}
+#main-session {
+	display: flex;
+	flex-basis: 65vw;
+	flex-direction: column;
+	justify-content: space-between;
+	margin: 1rem 1rem 1rem 0;
+	border-radius: 1rem;
+	box-shadow: var(--container-shadow);
+	background: var(--bg-session-color);
+	overflow: hidden;
+}
+/* === SETTING STYLING === */
+.settings-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1.5rem 0;
+	height: 100%;
+	button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.5rem;
+		padding: 0.8rem;
+	}
+	button:hover {
+		background: hsla(0, 0%, 50%, 0.5);
+	}
+	.features {
+		display: flex;
+		flex-direction: column;
+	}
+}
+/* === SESSION STYLING === */
+.card-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.card {
+	position: relative;
+	margin: 3vw;
+	border-top: var(--card-border-top);
+	border-radius: 1rem;
+	box-shadow: var(--card-shadow);
+	background: var(--card-color);
+	width: 100%;
+	.question-info {
+		position: absolute;
+		bottom: 102%;
+		left: 1rem;
+		opacity: 0.5;
+		user-select: none;
+	}
+	.question-level {
+		position: absolute;
+		top: 0;
+		right: 0;
+		border-radius: 100%;
+		padding: 0 1rem;
+		font-size: 2rem;
+		font-weight: bold;
+		user-select: none;
+	}
+}
+/* LIBRARY */
+.library-action {
+	svg {
+		width: 2rem;
+		height: 2rem;
+	}
+	#library-back {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+	}
+	#library-add {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+	}
+}
+.library-header {
+	margin-top: 0.5rem;
+	text-align: center;
+	user-select: none;
+	.library-title {
+		font-size: 1.5rem;
+		font-weight: bold;
+	}
+	.library-current {
+		font-size: 0.8rem;
+	}
+}
+.library-contents {
+	margin-top: 1rem;
+	height: 100%;
+}
+/* MODULES */
+.modules-container,
+.units-container,
+.cards-container {
+	padding-top: 0.5rem;
+}
+
+.forward-button {
+	position: absolute;
+	right: 1rem;
+}
+
+.module,
+.unit,
+.library-card {
+	position: relative;
+	margin: 1rem;
+	border-top: var(--card-border-top);
+	border-radius: 1rem;
+	box-shadow: var(--card-shadow);
+	background: var(--module-color);
+	padding: 1rem;
+	user-select: none;
+	.module-info,
+	.unit-info,
+	.library-card-info {
+		.module-title,
+		.unit-title {
+			font-weight: bold;
+		}
+		.module-createdAt,
+		.unit-createdAt,
+		.library-card-createdAt,
+		.library-card-level {
+			color: hsla(0, 0%, 100%, 0.5);
+			font-size: 0.8rem;
+		}
+		.module-info {
+			display: flex;
+			justify-content: space-between;
+			font-weight: bold;
+			p {
+				text-align: right;
+				color: hsla(0, 0%, 100%, 0.5);
+				font-size: 0.8rem;
+			}
+			p:last-child {
+				color: var(--green);
+				font-weight: bold;
+			}
+		}
+		.module-description,
+		.unit-description {
+			margin: 0.5rem 0;
+			font-size: 0.9rem;
+		}
+	}
+	.module-toolbar,
+	.unit-toolbar,
+	.library-card-toolbar {
+		display: flex;
+		position: absolute;
+		right: 1rem;
+		bottom: 100%;
+		width: 0px;
+		height: 0px;
+		overflow: hidden;
+		gap: 0.5rem;
+		svg {
+			opacity: 0.5;
+			width: 1rem;
+			height: 1rem;
+		}
+		svg:hover {
+			opacity: 1;
+		}
+	}
+	&:hover {
+		.module-toolbar,
+		.unit-toolbar,
+		.library-card-toolbar {
+			width: fit-content;
+			height: fit-content;
+		}
+	}
+}
+.library-flashcard {
+	.library-card-info {
+		text-align: center;
+		.library-card-level {
+			color: var(--green);
+			font-weight: bold;
+		}
+		p {
+			font-size: 0.9rem;
+			user-select: text;
+		}
+		p:first-of-type {
+			border-bottom: 1px solid var(--gray);
+			padding-bottom: 0.5rem;
+		}
+		p:last-of-type {
+			padding-top: 0.5rem;
+		}
+		div {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 0.5rem;
+			span {
+				color: hsla(0, 0%, 100%, 0.5);
+				font-size: 0.9rem;
+			}
+		}
+	}
+}
+/* --- FLASHCARD --- */
+.card-flashcard {
+	.card-toolbar {
+		display: flex;
+		position: absolute;
+		right: 1rem;
+		bottom: 102%;
+		gap: 0.5rem;
+		button {
+			opacity: 0.5;
+		}
+		button:hover {
+			opacity: 1;
+		}
+	}
+	.card-info {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		padding: 1.5rem 2rem;
+		min-height: 250px;
+		p {
+			font-size: 1.5rem;
+			user-select: none;
+		}
+		&:hover {
+			p {
+				font-size: 0px;
+			}
+			p::after {
+				font-size: 1.5rem;
+				content: attr(data-back);
+			}
+		}
+	}
+	.card-flashcard-action {
+		display: flex;
+		user-select: none;
+		button {
+			display: flex;
+			opacity: 0.5;
+			border-top: 1px solid var(--gray);
+			padding: 0.7rem;
+			width: 100%;
+		}
+		button:hover {
+			opacity: 1;
+			background: hsla(0, 0%, 100%, 0.1);
+		}
+		button:first-child {
+			border-bottom-left-radius: 1rem;
+		}
+		button:last-child {
+			border-bottom-right-radius: 1rem;
+			svg {
+				margin-left: auto;
+			}
+		}
+	}
+	&:hover {
+		.card-toolbar {
+		}
+	}
+}
+/* --- FLASHCARD END --- */
+/* LEVELS */
+.card-levels {
+	display: flex;
+	justify-content: space-between;
+	justify-self: flex-end;
+	span {
+		background-color: cadetblue;
+		width: 100%;
+		text-align: center;
+		font-weight: bold;
+		user-select: none;
+	}
+	.level-1 {
+		background-color: var(--level-1);
+	}
+	.level-2 {
+		background-color: var(--level-2);
+	}
+	.level-3 {
+		background-color: var(--level-3);
+	}
+	.level-4 {
+		background-color: var(--level-4);
+	}
+	.level-5 {
+		background-color: var(--level-5);
+	}
+}
+/* LEVELS END */
+/* === UTILITIES === */
+.hidden {
+	opacity: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	overflow: hidden !important;
+}
+.no-display {
+	display: none;
+}
+.theme-system {
+	color-scheme: light dark;
+}
+.theme-dark {
+	color-scheme: dark !important;
+}
+.theme-light {
+	color-scheme: light !important;
+}
+.line-vertical {
+	opacity: 0.5;
+	background-color: var(--gray);
+	width: 1px;
+	min-height: 100%;
+}
+.visiting-feature {
+	background: hsla(0, 0%, 50%, 0.5);
+}
+/* === UTILITIES END === */

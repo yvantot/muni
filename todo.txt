@@ -1,0 +1,25 @@
+Muni
+- Works as tab/newtab/popup
+
+- Hover or click to reveal answer
+- Allow hints feature
+- Tags
+- Focused session
+- User settings
+- Question Popup (only flashcard for now) must work for focused & unfocused window
+- Module System
+- AI Prompt for automated q/a input
+- Q/A input syntax
+- Custom rules when popup will appear
+
+
+- To implement
+- Export/Import data
+- PWA support
+- Different type of questions support, images, links support
+- Text-editor
+- Stats visualization
+- Website support (local storage)
+
+- on Storage change should have a reason property to make rendering more flexible
+- Make code modular
