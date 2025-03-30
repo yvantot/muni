@@ -21,15 +21,15 @@ async function update() {
 	let userdata = await local.get(null);
 
 	const currentNav = LIBRARY_CONTENTS.dataset.currentNav;
-	const moduleIndex = LIBRARY_CONTENTS.dataset.moduleIndex;
-	const unitIndex = LIBRARY_CONTENTS.dataset.unitIndex;
+	const moduleId = LIBRARY_CONTENTS.dataset.moduleId;
+	const unitId = LIBRARY_CONTENTS.dataset.unitId;
 
 	if (currentNav === "modules") {
 		renderElLibrary(userdata, -1, -1);
 	} else if (currentNav === "units") {
-		renderElLibrary(userdata, moduleIndex, -1);
+		renderElLibrary(userdata, moduleId, -1);
 	} else if (currentNav === "cards") {
-		renderElLibrary(userdata, moduleIndex, unitIndex);
+		renderElLibrary(userdata, moduleId, unitId);
 	}
 }
 
@@ -39,24 +39,26 @@ function initListeners() {
 	LIBRARY_BACK.addEventListener("click", async () => {
 		const userdata = await local.get(null);
 		const currentNav = LIBRARY_CONTENTS.dataset.currentNav;
-		const moduleIndex = LIBRARY_CONTENTS.dataset.moduleIndex;
+		const moduleId = LIBRARY_CONTENTS.dataset.moduleId;
 
 		if (currentNav === "units") {
 			LIBRARY_CONTENTS.dataset.currentNav = "modules";
 			renderElLibrary(userdata, -1, -1);
 		} else if (currentNav === "cards") {
 			LIBRARY_CONTENTS.dataset.currentNav = "units";
-			renderElLibrary(userdata, moduleIndex, -1);
+			renderElLibrary(userdata, moduleId, -1);
 		}
 	});
 
 	LIBRARY_ADD.addEventListener("click", async () => {
 		const userdata = await local.get(null);
 		const currentNav = LIBRARY_CONTENTS.dataset.currentNav;
-		const moduleIndex = LIBRARY_CONTENTS.dataset.moduleIndex;
-		const unitIndex = LIBRARY_CONTENTS.dataset.unitIndex;
+		const moduleId = parseInt(LIBRARY_CONTENTS.dataset.moduleId);
+		const unitId = parseInt(LIBRARY_CONTENTS.dataset.unitId);
 
 		if (currentNav === "units") {
+			const moduleIndex = userdata.modules.findIndex((module) => module.id === moduleId);
+
 			let id = getMaxNumber(userdata.modules[moduleIndex].units.map((unit) => unit.id));
 			if (userdata.modules[moduleIndex].units.length !== 0) id += 1;
 
@@ -73,10 +75,11 @@ function initListeners() {
 
 			await local.set(userdata);
 		} else if (currentNav === "cards") {
-			let id = getMaxNumber(userdata.modules[moduleIndex].units[unitIndex].cards.map((card) => card.id));
-			if (userdata.modules[moduleIndex].units[unitIndex].cards.length !== 0) id += 1;
+			let moduleIndex = userdata.modules.findIndex((module) => moduleId === module.id);
+			let id = getMaxNumber(userdata.modules[moduleIndex].units[unitId].cards.map((card) => card.id));
+			if (userdata.modules[moduleIndex].units[unitId].cards.length !== 0) id += 1;
 
-			userdata.modules[moduleIndex].units[unitIndex].cards.push({
+			userdata.modules[moduleIndex].units[unitId].cards.push({
 				id,
 				type: "card",
 				card_type: "flashcard",
@@ -119,7 +122,7 @@ function getMaxNumber(arr) {
 	return max;
 }
 
-function renderElLibrary(userdata, moduleIndex, unitIndex) {
+function renderElLibrary(userdata, moduleId, unitId) {
 	const { LIBRARY_CONTENTS, LIBRARY_CURRENT, LIBRARY_CURRENT_TITLE } = ELEMENTS;
 	LIBRARY_CONTENTS.innerHTML = "";
 
@@ -128,17 +131,21 @@ function renderElLibrary(userdata, moduleIndex, unitIndex) {
 
 	const { modules } = userdata;
 
-	if (moduleIndex === -1 && unitIndex === -1) {
+	if (moduleId === -1 && unitId === -1) {
 		// Render modules
 		LIBRARY_CONTENTS.appendChild(getElModules(modules));
 		LIBRARY_CURRENT_TITLE.textContent = `Home`;
-	} else if (moduleIndex >= 0 && unitIndex === -1) {
+	} else if (moduleId >= 0 && unitId === -1) {
 		// Render units
-		LIBRARY_CONTENTS.dataset.moduleIndex = moduleIndex;
-		LIBRARY_CONTENTS.appendChild(getElUnits(modules[moduleIndex].units));
-		LIBRARY_CURRENT_TITLE.textContent = `Home > ${cutString(userdata.modules[moduleIndex].title)}`;
-	} else if (moduleIndex >= 0 && unitIndex >= 0) {
+		const moduleIndex = modules.findIndex((module) => module.id === moduleId); // Finding the module index
+
+		LIBRARY_CONTENTS.appendChild(getElUnits(modules[moduleIndex].units)); // Rendering the units
+		LIBRARY_CURRENT_TITLE.textContent = `Home > ${cutString(userdata.modules[moduleIndex].title)}`; // Changing the library path info
+	} else if (moduleId >= 0 && unitId >= 0) {
 		// Render cards
+		const moduleIndex = modules.findIndex((module) => module.id === moduleId); // Finding the module index
+		const unitIndex = modules[moduleIndex].units.findIndex((unit) => unit.id === unitId); // Finding the unit index
+
 		LIBRARY_CONTENTS.appendChild(getElCards(modules[moduleIndex].units[unitIndex].cards));
 		LIBRARY_CURRENT_TITLE.textContent = `Home > ${cutString(userdata.modules[moduleIndex].title)} > ${cutString(userdata.modules[moduleIndex].units[unitIndex].title)}`;
 	}
@@ -254,6 +261,7 @@ function setElModuleListener(container, id, isEditingInfo) {
 		}
 		const userdata = await local.get(null);
 		ELEMENTS.LIBRARY_CONTENTS.dataset.currentNav = "units";
+		ELEMENTS.LIBRARY_CONTENTS.dataset.moduleId = id;
 		renderElLibrary(userdata, id, -1);
 	});
 
@@ -287,9 +295,11 @@ function setElUnitListener(container, id, isEditingInfo) {
 				alert("Please finish editing");
 			} else {
 				const userdata = await local.get(null);
-				const moduleIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleIndex;
+				const moduleId = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleId;
+				let moduleIndex = userdata.modules.findIndex((module) => moduleId === module.id);
+				const unitIndex = userdata.modules[moduleIndex].units.findIndex((unit) => unit.id === id);
 				userdata.modules[moduleIndex].units[id].title = title.innerText;
-				userdata.modules[moduleIndex].units[id].description = description.innerText;
+				userdata.modules[unitIndex].units[id].description = description.innerText;
 				await local.set(userdata);
 			}
 		});
@@ -298,10 +308,10 @@ function setElUnitListener(container, id, isEditingInfo) {
 	const deleteBtn = container.querySelector(".delete");
 	deleteBtn.addEventListener("click", async () => {
 		const userdata = await local.get(null);
-		const moduleIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleIndex;
-		const index = userdata.modules[moduleIndex].units.findIndex((unit) => unit.id === id);
-		if (index === -1) return;
-		userdata.modules[moduleIndex].units.splice(index, 1);
+		const moduleId = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleId;
+		let moduleIndex = userdata.modules.findIndex((module) => moduleId === module.id);
+		const unitIndex = userdata.modules[moduleIndex].units.findIndex((unit) => unit.id === id);
+		userdata.modules[moduleIndex].units.splice(unitIndex, 1);
 		await local.set(userdata);
 	});
 
@@ -313,18 +323,19 @@ function setElUnitListener(container, id, isEditingInfo) {
 		}
 		const userdata = await local.get(null);
 
-		const moduleIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleIndex;
+		const moduleId = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleId;
 		ELEMENTS.LIBRARY_CONTENTS.dataset.currentNav = "cards";
-		ELEMENTS.LIBRARY_CONTENTS.dataset.unitIndex = id;
-		renderElLibrary(userdata, moduleIndex, id);
+		ELEMENTS.LIBRARY_CONTENTS.dataset.unitId = id;
+		renderElLibrary(userdata, moduleId, id);
 	});
 
 	const activeBtn = container.querySelector(".active-button");
 	activeBtn.addEventListener("click", async () => {
 		const userdata = await local.get(null);
-		const moduleIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleIndex;
-		const index = userdata.modules[moduleIndex].units.findIndex((unit) => unit.id === id);
-		userdata.modules[moduleIndex].units[index].isActive = !userdata.modules[moduleIndex].units[index].isActive;
+		const moduleId = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleId;
+		let moduleIndex = userdata.modules.findIndex((module) => moduleId === module.id);
+		const unitIndex = userdata.modules[moduleIndex].units.findIndex((unit) => unit.id === id);
+		userdata.modules[moduleIndex].units[unitIndex].isActive = !userdata.modules[moduleIndex].units[unitIndex].isActive;
 		await local.set(userdata);
 	});
 
@@ -345,10 +356,13 @@ function setElCardListener(container, id, isEditingInfo) {
 				alert("Please finish editing");
 			} else {
 				const userdata = await local.get(null);
-				const moduleIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleIndex;
-				const unitIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.unitIndex;
-				userdata.modules[moduleIndex].units[unitIndex].cards[id].front = front.innerText;
-				userdata.modules[moduleIndex].units[unitIndex].cards[id].back = back.innerText;
+				const moduleId = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleId;
+				const unitId = ELEMENTS.LIBRARY_CONTENTS.dataset.unitId;
+				const moduleIndex = userdata.modules.findIndex((module) => moduleId === module.id);
+				const unitIndex = userdata.modules[moduleIndex].units.findIndex((unit) => unit.id === unitId);
+				const cardIndex = userdata.modules[moduleIndex].units[unitIndex].cards.findIndex((card) => card.id === id);
+				userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].front = front.innerText;
+				userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].back = back.innerText;
 				await local.set(userdata);
 			}
 		});
@@ -357,11 +371,12 @@ function setElCardListener(container, id, isEditingInfo) {
 	const deleteBtn = container.querySelector(".delete");
 	deleteBtn.addEventListener("click", async () => {
 		const userdata = await local.get(null);
-		const moduleIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleIndex;
-		const unitIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.unitIndex;
-		const index = userdata.modules[moduleIndex].units[unitIndex].cards.findIndex((card) => card.id === id);
-		if (index === -1) return;
-		userdata.modules[moduleIndex].units[unitIndex].cards.splice(index, 1);
+		const moduleId = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleId;
+		const unitId = ELEMENTS.LIBRARY_CONTENTS.dataset.unitId;
+		const moduleIndex = userdata.modules.findIndex((module) => moduleId === module.id);
+		const unitIndex = userdata.modules[moduleIndex].units.findIndex((unit) => unit.id === unitId);
+		const cardIndex = userdata.modules[moduleIndex].units[unitIndex].cards.findIndex((card) => card.id === id);
+		userdata.modules[moduleIndex].units[unitIndex].cards.splice(cardIndex, 1);
 		await local.set(userdata);
 	});
 }
