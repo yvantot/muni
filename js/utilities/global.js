@@ -30,21 +30,23 @@ export const STORAGE_STRUCT = {
 		{
 			id: 0,
 			type: "module",
-			title: "Module",
-			description: "Learning this module",
+			title: "Title",
+			description: "Description",
 
-			author: "Just some guy",
+			author: "Author",
 			createdAt: String(new Date()),
 			isActive: true,
+			isEditing: false,
 			units: [
 				{
 					id: 0,
 					type: "unit",
-					title: "Unit",
-					description: "Active unit",
+					title: "Title",
+					description: "Description",
 
 					createdAt: String(new Date()),
 					isActive: true,
+					isEditing: false,
 					cards: [
 						{
 							id: 0,
@@ -52,9 +54,10 @@ export const STORAGE_STRUCT = {
 							card_type: "flashcard",
 							level: 0, // If 6, then it's done
 							createdAt: String(new Date()),
+							isEditing: false,
 
-							front: "Front card",
-							back: "Back card",
+							front: "Front",
+							back: "Back",
 						},
 						// {
 						// 	id: 1,

@@ -159,43 +159,43 @@ function getElModules(modules) {
 }
 
 function getElModule(module) {
-	const { id, type, title, description, author, createdAt, isActive, units } = module;
+	const { id, type, title, description, author, createdAt, isActive, units, isEditing } = module;
 
 	const unitsCount = units.length;
 	const cardsCount = getCardsCount(units);
 	const container = document.createElement("div");
-	const isEditing = isEmptyStr(title) || isEmptyStr(description);
+	const isEditingInfo = isEmptyStr(title) || isEmptyStr(description) || isEditing;
 
+	if (!isActive) container.classList.add("not-active");
 	container.classList.add("module");
 	container.dataset.type = type;
 	container.dataset.id = id;
 
 	container.innerHTML = `
         <div class="module-toolbar">
-            <button>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+            <button class="active-button">
+                ${isActive ? '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M360-320h80v-320h-80v320Zm160 0h80v-320h-80v320ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>'}                
             </button>
-            ${!isEditing ? '<button class="card-edit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" /></svg></button>' : ""}
-            
+            ${!isEditingInfo ? '<button class="edit-info"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" /></svg></button>' : ""}            
             <button class="delete">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
             </button>
-        </div>        
+        </div>
         <button class='forward-button'>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/></svg>
         </button>                
-        ${isEditing ? '<button class="edit-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>' : ""}
+        ${isEditingInfo ? '<button class="edit-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>' : ""}
         <div class="module-info">
-            <p contentEditable="${isEditing ? "true" : "false"}" class="module-title ${isEmptyStr(title) ? "editing" : ""}">${isEmptyStr(title) ? "Title" : title}</p>
-            <p contentEditable="${isEditing ? "true" : "false"}" class="module-description ${isEmptyStr(description) ? "editing" : ""}">${isEmptyStr(description) ? "Description" : description}</p>
+            <p contentEditable="${isEditingInfo ? "true" : "false"}" class="module-title ${isEmptyStr(title) || isEditingInfo ? "editing" : ""}">${isEmptyStr(title) ? "Title" : title}</p>
+            <p contentEditable="${isEditingInfo ? "true" : "false"}" class="module-description ${isEmptyStr(description) || isEditingInfo ? "editing" : ""}">${isEmptyStr(description) ? "Description" : description}</p>
             <p class="module-createdAt">${dateToYYYYMMDD(new Date(createdAt))}</p>
             <div class="module-info">
-                <p contentEditable="${isEditing ? "true" : "false"}" class="module-author ${isEmptyStr(author) ? "editing" : ""}">${isEmptyStr(author) ? "Author" : author}</p>
+                <p contentEditable="${isEditingInfo ? "true" : "false"}" class="module-author ${isEmptyStr(author) || isEditingInfo ? "editing" : ""}">${isEmptyStr(author) ? "Author" : author}</p>
                 <p>${unitsCount} unit${addPlural(unitsCount)} - ${cardsCount} card${addPlural(cardsCount)}</p>
             </div>
         </div>
     `;
-	setElModuleListener(container, id, isEditing);
+	setElModuleListener(container, id, isEditingInfo);
 	return container;
 }
 
@@ -216,8 +216,8 @@ function getCardsCount(units) {
 	return cardsCount;
 }
 
-function setElModuleListener(container, id, isEditing) {
-	if (isEditing) {
+function setElModuleListener(container, id, isEditingInfo) {
+	if (isEditingInfo) {
 		const confirmEdit = container.querySelector(".edit-button");
 
 		confirmEdit.addEventListener("click", async () => {
@@ -228,9 +228,11 @@ function setElModuleListener(container, id, isEditing) {
 				alert("Please finish editing");
 			} else {
 				const userdata = await local.get(null);
-				userdata.modules[id].title = title.innerText;
-				userdata.modules[id].description = description.innerText;
-				userdata.modules[id].author = author.innerText;
+				const index = userdata.modules.findIndex((module) => module.id === id);
+				userdata.modules[index].title = title.innerText;
+				userdata.modules[index].description = description.innerText;
+				userdata.modules[index].author = author.innerText;
+				userdata.modules[index].isEditing = false;
 				await local.set(userdata);
 			}
 		});
@@ -246,19 +248,36 @@ function setElModuleListener(container, id, isEditing) {
 
 	const forward = container.querySelector(".forward-button");
 	forward.addEventListener("click", async () => {
-		if (isEditing) {
+		if (isEditingInfo) {
 			alert("Please finish editing");
 			return;
 		}
 		const userdata = await local.get(null);
-
 		ELEMENTS.LIBRARY_CONTENTS.dataset.currentNav = "units";
 		renderElLibrary(userdata, id, -1);
 	});
+
+	const activeBtn = container.querySelector(".active-button");
+	activeBtn.addEventListener("click", async () => {
+		const userdata = await local.get(null);
+		const index = userdata.modules.findIndex((module) => module.id === id);
+		userdata.modules[index].isActive = !userdata.modules[index].isActive; // Toggle
+		await local.set(userdata);
+	});
+
+	const editBtn = container.querySelector(".edit-info");
+	if (editBtn) {
+		editBtn.addEventListener("click", async () => {
+			const userdata = await local.get(null);
+			const index = userdata.modules.findIndex((module) => module.id === id);
+			userdata.modules[index].isEditing = !userdata.modules[index].isEditing; // Toggle
+			await local.set(userdata);
+		});
+	}
 }
 
-function setElUnitListener(container, id, isEditing) {
-	if (isEditing) {
+function setElUnitListener(container, id, isEditingInfo) {
+	if (isEditingInfo) {
 		const confirmEdit = container.querySelector(".edit-button");
 
 		confirmEdit.addEventListener("click", async () => {
@@ -288,7 +307,7 @@ function setElUnitListener(container, id, isEditing) {
 
 	const forward = container.querySelector(".forward-button");
 	forward.addEventListener("click", async () => {
-		if (isEditing) {
+		if (isEditingInfo) {
 			alert("Please finish editing");
 			return;
 		}
@@ -299,10 +318,24 @@ function setElUnitListener(container, id, isEditing) {
 		ELEMENTS.LIBRARY_CONTENTS.dataset.unitIndex = id;
 		renderElLibrary(userdata, moduleIndex, id);
 	});
+
+	const activeBtn = container.querySelector(".active-button");
+	activeBtn.addEventListener("click", async () => {
+		const userdata = await local.get(null);
+		const moduleIndex = ELEMENTS.LIBRARY_CONTENTS.dataset.moduleIndex;
+		const index = userdata.modules[moduleIndex].units.findIndex((unit) => unit.id === id);
+		userdata.modules[moduleIndex].units[index].isActive = !userdata.modules[moduleIndex].units[index].isActive;
+		await local.set(userdata);
+	});
+
+	const editBtn = container.querySelector(".edit-info");
+	editBtn.addEventListener("click", () => {
+		alert(1);
+	});
 }
 
-function setElCardListener(container, id, isEditing) {
-	if (isEditing) {
+function setElCardListener(container, id, isEditingInfo) {
+	if (isEditingInfo) {
 		const confirmEdit = container.querySelector(".edit-button");
 
 		confirmEdit.addEventListener("click", async () => {
@@ -343,21 +376,22 @@ function getElUnits(units) {
 }
 
 function getElUnit(unit) {
-	const { id, type, title, description, createdAt, isActive, cards } = unit;
+	const { id, type, title, description, createdAt, isActive, cards, isEditing } = unit;
 
 	const container = document.createElement("div");
-	const isEditing = isEmptyStr(title) || isEmptyStr(description);
+	const isEditingInfo = isEmptyStr(title) || isEmptyStr(description) || isEditing;
 
+	if (!isActive) container.classList.add("not-active");
 	container.classList.add("unit");
 	container.dataset.type = type;
 	container.dataset.id = id;
 
 	container.innerHTML = `        
         <div class="unit-toolbar">
-            <button>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+            <button class="active-button">
+            ${isActive ? '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M360-320h80v-320h-80v320Zm160 0h80v-320h-80v320ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>'}
             </button>
-            <button class="card-edit">
+            <button class="edit-info">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" /></svg>
             </button>
             <button class="delete">
@@ -367,17 +401,17 @@ function getElUnit(unit) {
         <button class='forward-button'>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/></svg>
         </button>
-        ${isEditing ? '<button class="edit-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>' : ""}
+        ${isEditingInfo ? '<button class="edit-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>' : ""}
         <div class="unit-info">
-            <p contentEditable="${isEditing ? "true" : "false"}" class="unit-title ${isEmptyStr(title) ? "editing" : ""}">${isEmptyStr(title) ? "Title" : title}</p>
-            <p contentEditable="${isEditing ? "true" : "false"}" class="unit-description ${isEmptyStr(description) ? "editing" : ""}">${isEmptyStr(description) ? "Description" : description}</p>
+            <p contentEditable="${isEditingInfo ? "true" : "false"}" class="unit-title ${isEmptyStr(title) ? "editing" : ""}">${isEmptyStr(title) ? "Title" : title}</p>
+            <p contentEditable="${isEditingInfo ? "true" : "false"}" class="unit-description ${isEmptyStr(description) ? "editing" : ""}">${isEmptyStr(description) ? "Description" : description}</p>
             <p class="unit-createdAt">${dateToYYYYMMDD(new Date(createdAt))}</p>
             <div class="module-info">
                 <p>${cards.length} card${addPlural(cards.length)}</p>
             </div>
         </div>
     `;
-	setElUnitListener(container, id, isEditing);
+	setElUnitListener(container, id, isEditingInfo);
 	return container;
 }
 
@@ -391,7 +425,7 @@ function getElCards(cards) {
 }
 
 function getElCard(card) {
-	const { id, type, card_type, level, createdAt } = card;
+	const { id, type, card_type, level, createdAt, isEditing } = card;
 	const container = document.createElement("div");
 
 	container.classList.add("library-card");
@@ -404,21 +438,21 @@ function getElCard(card) {
 		case "flashcard":
 			const { front, back } = card;
 			container.classList.add("library-flashcard");
-			const isEditing = isEmptyStr(front) || isEmptyStr(back);
+			const isEditingInfo = isEmptyStr(front) || isEmptyStr(back) || isEditing;
 
 			container.innerHTML = `
                 <div class="library-card-toolbar">
-                    <button class="card-edit">
+                    <button class="edit-info">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" /></svg>
                     </button>
                     <button class="delete">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
                     </button>
                 </div>                
-                ${isEditing ? '<button class="edit-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>' : ""}
+                ${isEditingInfo ? '<button class="edit-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>' : ""}
                 <div class="library-card-info">
-                    <p contentEditable="${isEditing ? "true" : "false"}" class="front ${isEmptyStr(front) ? "editing" : ""}">${isEmptyStr(front) ? "Front" : front}</p>
-                    <p contentEditable="${isEditing ? "true" : "false"}" class="back ${isEmptyStr(back) ? "editing" : ""}">${isEmptyStr(back) ? "Back" : back}</p>
+                    <p contentEditable="${isEditingInfo ? "true" : "false"}" class="front ${isEmptyStr(front) ? "editing" : ""}">${isEmptyStr(front) ? "Front" : front}</p>
+                    <p contentEditable="${isEditingInfo ? "true" : "false"}" class="back ${isEmptyStr(back) ? "editing" : ""}">${isEmptyStr(back) ? "Back" : back}</p>
                     <div>
                         <span class="library-card-createdAt">${dateToYYYYMMDD(new Date(createdAt))}</span>
                         <span class="library-card-level">Level ${level}</span>
@@ -426,7 +460,7 @@ function getElCard(card) {
                 </div>
             `;
 
-			setElCardListener(container, id, isEditing);
+			setElCardListener(container, id, isEditingInfo);
 			break;
 		case "truefalse":
 			break;

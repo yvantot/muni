@@ -2,8 +2,12 @@ Muni
 
 BUGS
 --> When user added multiple modules/units/cards unedited and try to batch-edit, the update logic will turn other inputs to a placeholder
-    This can be easily fixed with 'reason' rendering logic
+    This can be easily fixed with 'reason' rendering logic.
 
+FINISHED
+- Module System
+
+TO WORK ON
 - Works as tab/newtab/popup
 - Hover or click to reveal answer
 - Allow hints feature
@@ -11,7 +15,7 @@ BUGS
 - Focused session
 - User settings
 - Question Popup (only flashcard for now) must work for focused & unfocused window
-- Module System
+
 - AI Prompt for automated q/a input
 - Q/A input syntax
 - Custom rules when popup will appear

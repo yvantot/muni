@@ -177,7 +177,6 @@ body {
 }
 .library-contents {
 	margin-top: 1rem;
-	height: 100%;
 }
 /* MODULES */
 .modules-container,
@@ -458,5 +457,10 @@ body {
 	background-color: var(--gray);
 	cursor: text;
 	border-bottom: 2px solid var(--gray);
+}
+.not-active {
+	opacity: 0.5;
+	box-shadow: none;
+	border: none;
 }
 /* === UTILITIES END === */
