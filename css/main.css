@@ -4,7 +4,7 @@
 	src: url("./../assets/Montserrat.ttf") format("truetype");
 }
 :root {
-	--bg-main-color: light-dark(hsl(0, 0%, 95%), hsl(0, 0%, 15%));
+	--bg-main-color: light-dark(hsl(0, 0%, 95%), hsl(0, 0%, 20%));
 	--bg-statistic-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
 	--bg-setting-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
 	--bg-session-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
