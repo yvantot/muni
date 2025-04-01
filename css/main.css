@@ -9,7 +9,7 @@
 	--bg-setting-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
 	--bg-session-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
 	--text-main-color: light-dark(hsl(0, 0%, 10%), hsl(0, 0%, 90%));
-	--card-color: light-dark(hsl(0, 0%, 100%), hsl(219, 30%, 15%));
+	--card-color: light-dark(hsl(0, 0%, 100%), hsl(219, 0%, 20%));
 	--card-shadow: 0 5px 10px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 5%));
 	--confirm-edit-shadow: 0 10px 10px -5px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 5%));
 	--container-shadow: 0 10px 10px -5px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 5%));
@@ -380,10 +380,6 @@ body {
 			}
 		}
 	}
-	&:hover {
-		.card-toolbar {
-		}
-	}
 }
 /* --- FLASHCARD END --- */
 /* LEVELS */
@@ -462,5 +458,17 @@ body {
 	opacity: 0.5;
 	box-shadow: none;
 	border: none;
+}
+.session-card-edit {
+	display: flex;
+	flex-direction: column;
+	padding: 1rem;
+	align-items: center;
+	justify-content: space-around;
+
+	.card-edit {
+		width: 100%;
+		padding: 0 2rem;
+	}
 }
 /* === UTILITIES END === */

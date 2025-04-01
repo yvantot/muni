@@ -12,6 +12,17 @@ export const ELEMENTS = {
 	LIBRARY_CONTENTS: document.getElementById("library-contents"),
 	LIBRARY_BACK: document.getElementById("library-back"),
 	LIBRARY_ADD: document.getElementById("library-add"),
+	SESSION: document.getElementById("main-session"),
+	SESSION_CONTENTS: document.getElementById("card-container"),
+	SESSION_LEVELS: document.getElementById("main-session").querySelectorAll(".card-levels span"),
+};
+
+export const CARDS = {
+	1: [],
+	2: [],
+	3: [],
+	4: [],
+	5: [],
 };
 
 // DEFAULT STORAGE STRUCTURE
@@ -26,6 +37,7 @@ export const STORAGE_STRUCT = {
 			settings: false,
 		},
 	},
+	reason: "",
 	modules: [
 		{
 			id: 0,
@@ -52,7 +64,7 @@ export const STORAGE_STRUCT = {
 							id: 0,
 							type: "card",
 							card_type: "flashcard",
-							level: 0, // If 6, then it's done
+							level: 1, // If 6, then it's done
 							createdAt: String(new Date()),
 							isEditing: false,
 
@@ -66,7 +78,7 @@ export const STORAGE_STRUCT = {
 						// 	question: "Question",
 						// 	answer: true,
 
-						// 	level: 0, // If 6, then it's done
+						// 	level: 1, // If 6, then it's done
 						// 	createdAt: new Date(),
 						// },
 						// {
@@ -76,7 +88,7 @@ export const STORAGE_STRUCT = {
 						// 	question: "Identification",
 						// 	answer: "string",
 
-						// 	level: 0, // If 6, then it's done
+						// 	level: 1, // If 6, then it's done
 						// 	createdAt: new Date(),
 						// },
 						// {
@@ -87,7 +99,7 @@ export const STORAGE_STRUCT = {
 						// 	choices: ["Choice 1", "Choice 2", "Choice 3", "Choice 4"],
 						// 	answer: 0,
 
-						// 	level: 0,
+						// 	level: 1,
 						// 	createdAt: new Date(),
 						// },
 					],

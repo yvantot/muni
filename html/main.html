@@ -29,6 +29,11 @@
 								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M686-132 444-376q-20 8-40.5 12t-43.5 4q-100 0-170-70t-70-170q0-36 10-68.5t28-61.5l146 146 72-72-146-146q29-18 61.5-28t68.5-10q100 0 170 70t70 170q0 23-4 43.5T584-516l244 242q12 12 12 29t-12 29l-84 84q-12 12-29 12t-29-12Zm29-85 27-27-256-256q18-20 26-46.5t8-53.5q0-60-38.5-104.5T386-758l74 74q12 12 12 28t-12 28L332-500q-12 12-28 12t-28-12l-74-74q9 57 53.5 95.5T360-440q26 0 52-8t47-25l256 256ZM472-488Z" /></svg>
 							</button>
 						</div>
+						<div>
+							<button>
+								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M160-360q-50 0-85-35t-35-85q0-50 35-85t85-35v-80q0-33 23.5-56.5T240-760h120q0-50 35-85t85-35q50 0 85 35t35 85h120q33 0 56.5 23.5T800-680v80q50 0 85 35t35 85q0 50-35 85t-85 35v160q0 33-23.5 56.5T720-120H240q-33 0-56.5-23.5T160-200v-160Zm200-80q25 0 42.5-17.5T420-500q0-25-17.5-42.5T360-560q-25 0-42.5 17.5T300-500q0 25 17.5 42.5T360-440Zm240 0q25 0 42.5-17.5T660-500q0-25-17.5-42.5T600-560q-25 0-42.5 17.5T540-500q0 25 17.5 42.5T600-440ZM320-280h320v-80H320v80Zm-80 80h480v-480H240v480Zm240-240Z" /></svg>
+							</button>
+						</div>
 					</div>
 					<div class="setting-lower features">
 						<div>
@@ -82,49 +87,18 @@
 				<!-- TOOLBAR QoL features-->
 				<div></div>
 				<!-- MAIN CARD CONTAINER -->
-				<div class="card-container">
-					<div class="card card-flashcard">
-						<!-- Info -->
-						<p class="question-info">Module : Unit</p>
-						<p class="question-level">1</p>
-						<!-- Toolbar -->
-						<div class="card-toolbar">
-							<button>
-								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M400-240q-33 0-56.5-23.5T320-320v-50q-57-39-88.5-100T200-600q0-117 81.5-198.5T480-880q117 0 198.5 81.5T760-600q0 69-31.5 129.5T640-370v50q0 33-23.5 56.5T560-240H400Zm0-80h160v-92l34-24q41-28 63.5-71.5T680-600q0-83-58.5-141.5T480-800q-83 0-141.5 58.5T280-600q0 49 22.5 92.5T366-436l34 24v92Zm0 240q-17 0-28.5-11.5T360-120v-40h240v40q0 17-11.5 28.5T560-80H400Zm80-520Z" /></svg>
-							</button>
-							<button class="card-edit">
-								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" /></svg>
-							</button>
-							<button class="card-delete">
-								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
-							</button>
-						</div>
-						<!-- Info -->
-						<div class="card-info">
-							<p class="question" data-back="Gusto kitang makita na kumikinang palagi">Pag tayo magkasama yung pakiramdam Young Gaddy</p>
-						</div>
-						<!-- Action -->
-						<div class="card-flashcard-action">
-							<button class="card-backward">
-								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
-							</button>
-							<div class="line-vertical"></div>
-							<button class="card-forward">
-								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" /></svg>
-							</button>
-						</div>
-					</div>
+				<div id="card-container" class="card-container">
 					<!-- <div class="card card-truefalse"></div>
 					<div class="card card-identification"></div>
 					<div class="card card-multiple"></div> -->
 				</div>
 				<!-- LEVELS -->
 				<div class="card-levels">
-					<span class="level-1">1</span>
-					<span class="level-2">3</span>
-					<span class="level-3">2</span>
-					<span class="level-4">5</span>
-					<span class="level-5">1</span>
+					<span class="level-1">0</span>
+					<span class="level-2">0</span>
+					<span class="level-3">0</span>
+					<span class="level-4">0</span>
+					<span class="level-5">0</span>
 				</div>
 			</section>
 		</main>
