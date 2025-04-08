@@ -6,13 +6,14 @@ BUGS
 
 FINISHED
 - Module System
+- Session mode
 
 TO WORK ON
 - Works as tab/newtab/popup
 - Hover or click to reveal answer
 - Allow hints feature
 - Tags
-- Focused session
+- SVG globals
 - User settings
 - Question Popup (only flashcard for now) must work for focused & unfocused window
 

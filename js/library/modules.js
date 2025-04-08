@@ -12,7 +12,7 @@ export function getElModules(modules) {
 }
 
 function getElModule(module) {
-	const { id, type, title, description, author, createdAt, isActive, units, isEditing } = module;
+	const { id, title, description, author, createdAt, isActive, units, isEditing } = module;
 
 	const unitsCount = units.length;
 	const cardsCount = getCardsCount(units);

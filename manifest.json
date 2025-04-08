@@ -12,8 +12,35 @@
     "chrome_url_overrides": {
         "newtab": "./html/main.html"
     },
+    "content_scripts": [
+        {
+            "js": [
+                "./js/main-inject.js"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
+            "world": "ISOLATED",
+            "run_at": "document_start"
+        }
+    ],
+    "background": {
+        "service_worker": "./js/main-bg.js",
+        "type": "module"
+    },
     "action": {
         "default_popup": "./html/main.html",
         "default_title": "Muni"
-    }
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "css/inject.css",
+                "assets/Montserrat.ttf"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
 }

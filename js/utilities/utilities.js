@@ -1,3 +1,9 @@
+export function getLatestId(array) {
+	let id = getMaxNumber(array.map((val) => val.id)) ?? 0;
+	if (array.length !== 0) id += 1;
+	return id;
+}
+
 export function getIndexes(userdata, moduleId = -1, unitId = -1, cardId = -1) {
 	const indexes = { moduleIndex: null, unitIndex: null, cardIndex: null };
 	const { modules } = userdata;
@@ -27,7 +33,7 @@ export function dateToYYYYMMDD(date, divider) {
 }
 
 export function getMaxNumber(arr) {
-	if (arr.length === 0) return 0;
+	if (arr.length === 0) return undefined;
 
 	let max = arr[0];
 	for (let i = 1; i < arr.length; i++) {

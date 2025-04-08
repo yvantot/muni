@@ -1,0 +1,128 @@
+/* ONLY WHITE THEME BECAUSE IT NEEDS TO BE NOTICEABLE */
+/* 	When doing CSS in content script, always remember:
+	- Start with a clean state with: "all: initial", attached in your :host or &
+	- Avoid using rem, or measurements that depends on root elements, instead use em
+	- Beware of CSS inheritance, your font should always be in unique name.
+	- Don't take unnecessary width that may disrupt user's experience
+*/
+:host {
+	all: initial;
+	display: flex;
+	position: fixed;
+	top: 10px;
+	right: 50%;
+	justify-content: center;
+	transform: translateX(50%);
+	z-index: 9999999;
+	width: fit-content;
+	height: 35vh;
+	--border-color: hsla(0, 0%, 50%, 0.4);
+	--main-text-color: hsl(0, 0%, 10%);
+}
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	outline: none;
+	border: none;
+	background: none;
+	padding: 0;
+	line-height: 1.7;
+	color: var(--main-text-color);
+	font-family: Muni-Montserrat, Arial, Helvetica, sans-serif;
+	font-size: clamp(0.8em, 16px, 1.3em);
+	font-weight: normal;
+	font-style: normal;
+}
+button,
+svg {
+	cursor: pointer;
+}
+.card-flashcard {
+	display: flex;
+	position: relative;
+	flex-direction: column;
+	align-content: space-around;
+	border-radius: 1em;
+	box-shadow: 0px 3px 10px hsla(0, 0%, 0%, 0.8);
+	background: light-dark(hsl(0, 0%, 90%), hsl(0, 0%, 10%));
+	width: 40vw;
+	overflow: hidden;
+	color: light-dark(hsl(0, 0%, 10%), hsl(0, 0%, 90%));
+	.info-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-bottom: 1px solid var(--border-color);
+		padding: 0.5em 1em;
+		svg {
+			width: 1.3rem;
+			height: 1.3rem;
+		}
+	}
+	.card-toolbar {
+		button {
+			opacity: 0.5;
+		}
+		button:hover {
+			opacity: 1;
+		}
+	}
+	.card-info {
+		display: flex;
+		flex-grow: 1;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		padding: 1.5em 2em;
+		p {
+			font-size: 1.5em;
+			user-select: none;
+		}
+		.back {
+			display: none;
+		}
+		&:hover {
+			.front {
+				display: none;
+			}
+			.back {
+				display: block;
+			}
+		}
+	}
+	.card-flashcard-action {
+		display: flex;
+		user-select: none;
+		button {
+			display: flex;
+			justify-content: center;
+			opacity: 0.5;
+			border-top: 1px solid var(--border-color);
+			padding: 0.7em;
+			width: 100%;
+		}
+		button:hover {
+			opacity: 1;
+			background: hsla(0, 0%, 70%, 0.5);
+		}
+		button:first-child {
+			border-bottom-left-radius: 1em;
+		}
+		button:last-child {
+			border-bottom-right-radius: 1em;
+		}
+	}
+}
+.session-card-edit {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+	padding: 1em;
+	.card-edit {
+		padding: 0 2em;
+		width: 100%;
+	}
+}

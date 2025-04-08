@@ -4,19 +4,6 @@ export const browser = chrome;
 export const storage = browser.storage;
 export const local = storage.local;
 
-export const ELEMENTS = {
-	LIBRARY: document.getElementById("main-library"),
-	LIBRARY_HEADER: document.getElementById("library-header"),
-	LIBRARY_CURRENT: document.getElementById("library-current"),
-	LIBRARY_CURRENT_TITLE: document.getElementById("library-current-title"),
-	LIBRARY_CONTENTS: document.getElementById("library-contents"),
-	LIBRARY_BACK: document.getElementById("library-back"),
-	LIBRARY_ADD: document.getElementById("library-add"),
-	SESSION: document.getElementById("main-session"),
-	SESSION_CONTENTS: document.getElementById("card-container"),
-	SESSION_LEVELS: document.getElementById("main-session").querySelectorAll(".card-levels span"),
-};
-
 export const CARDS = {
 	1: [],
 	2: [],
@@ -36,8 +23,15 @@ export const STORAGE_STRUCT = {
 			rules: false,
 			settings: false,
 		},
+		rules: {
+			intervalMs: 1000 * 5,
+		},
 	},
-	reason: "",
+	reason: "", // Would be better if this in array for greater control
+	inject: {
+		answered: false,
+		time: undefined,
+	},
 	modules: [
 		{
 			id: 0,
@@ -108,3 +102,24 @@ export const STORAGE_STRUCT = {
 		},
 	],
 };
+
+// This gets executed when imported, which is not viable for extensions that has multiple context (background & page scripts)
+// TODO --> Fix this mess or learn from it lol
+// One of the fix is wrap it in function or just create another file
+// FIXED: use 'self' which is kind of 'window' global object but for service workers...
+export let ELEMENTS = undefined;
+if (self.document) {
+	ELEMENTS = {
+		LIBRARY: document.getElementById("main-library"),
+		LIBRARY_HEADER: document.getElementById("library-header"),
+		LIBRARY_CURRENT: document.getElementById("library-current"),
+		LIBRARY_CURRENT_TITLE: document.getElementById("library-current-title"),
+		LIBRARY_CONTENTS: document.getElementById("library-contents"),
+		LIBRARY_BACK: document.getElementById("library-back"),
+		LIBRARY_ADD: document.getElementById("library-add"),
+		SESSION: document.getElementById("main-session"),
+		SESSION_CONTENTS: document.getElementById("card-container"),
+		SESSION_LEVELS_CONTAINER: document.getElementById("main-session").querySelector(".card-levels"),
+		SESSION_LEVELS: document.getElementById("main-session").querySelectorAll(".card-levels span"),
+	};
+}

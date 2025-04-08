@@ -2,8 +2,14 @@
 import { ELEMENTS, CARDS, local } from "../utilities/global.js";
 import { getIndexes, isEmptyStr, cutString } from "../utilities/utilities.js";
 
+const BUTTONS = {
+	SHUFFLE: document.getElementById("shuffle-cards"),
+	FOCUS: document.getElementById("focus-ui"),
+};
+
 export function setCards(userdata) {
 	const { modules } = userdata;
+	if (!modules) return;
 
 	// Reset cards
 	CARDS[1] = [];
@@ -33,7 +39,6 @@ export function setCards(userdata) {
 	});
 
 	cards.forEach((card) => {
-		console.log(cards);
 		if (!card) return;
 		if (card.level > 5) {
 			if (true) {
@@ -71,6 +76,33 @@ export function renderElSession() {
 	if (card !== null) {
 		ELEMENTS.SESSION_CONTENTS.appendChild(getElSessCard(card, key));
 	}
+	updateElCardLevels();
+}
+
+function shuffleArray(array) {
+	console.log(array);
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+	console.log(array);
+	return array;
+}
+
+export function setElSessionlistener() {
+	const { SHUFFLE, FOCUS } = BUTTONS;
+
+	SHUFFLE.addEventListener("click", () => {
+		for (let i = 1; i <= Object.keys(CARDS).length; i++) {
+			if (CARDS[i].length > 1) {
+				CARDS[i] = shuffleArray(CARDS[i]);
+			}
+		}
+		renderElSession();
+	});
+	FOCUS.addEventListener("click", () => {
+		ELEMENTS.SESSION_LEVELS_CONTAINER.classList.toggle("invisible");
+	});
 }
 
 function setElSessCardListener(container, moduleId, unitId, cardId, key) {
@@ -177,10 +209,7 @@ function getElSessCard(card, key) {
 
 			const cardAction = `
 			<div class="card-flashcard-action">
-					<button class="card-backward">
-						<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
-					</button>
-					<div class="line-vertical"></div>
+					${level !== 1 ? '<button class="card-backward"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg></button><div class="line-vertical"></div>' : ""}										
 					<button class="card-forward">
 						<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" /></svg>
 					</button>
@@ -189,7 +218,7 @@ function getElSessCard(card, key) {
 
 			container.innerHTML = `				
 				<p class="question-info">${cutString(moduleTitle)} > ${cutString(unitTitle)}</p>
-				<p class="question-level">${level}</p>				
+				<p class="question-level color-level-${level}">${level}</p>				
 				<div class="card-toolbar">										
 					<button class="edit-info">
 						<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" /></svg>
@@ -199,8 +228,8 @@ function getElSessCard(card, key) {
 					</button>
 				</div>				
 				<div class="${!isEditingInfo ? "card-info" : "card-edit"}">
-					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="question front ${isEditingInfo ? "editing" : ""}" data-back="${back}">${front}</p>
-					${isEditingInfo ? `<p contentEditable="${isEditingInfo ? "true" : "false"}" class="question back ${isEditingInfo ? "editing" : ""}">${back}</p>` : ""}
+					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="question front ${isEditingInfo ? "editing" : ""}">${front}</p>
+					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="question back ${isEditingInfo ? "editing" : ""}">${back}</p>					
 				</div>				
 				${isEditingInfo ? '<button class="edit-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>' : ""}
 				${!isEditingInfo ? cardAction : ""}
