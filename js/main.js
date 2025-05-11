@@ -1,26 +1,47 @@
-// === main.js === //
-
 import { STORAGE_STRUCT, ELEMENTS, storage, local } from "./utilities/global.js";
 import { renderElLibrary, setElLibraryListener } from "./library/library.js";
-import { renderElSession, setElSessionlistener, updateElCardLevels } from "./session/session.js";
+import { renderElSession, setElSessionlistener } from "./session/session.js";
 import { setCards } from "./session/session.js";
 import { setElSettingsListener } from "./settings/settings.js";
-import { renderElSelectModule, setElSelectListener } from "./generate/generate.js";
+import { setElRulesListener, renderElRules } from "./rules/rules.js";
+import { setElSelectListener } from "./generate/generate.js";
+
+// These functions should be in utilities
+function popup_mode() {
+	if (location.search.includes("popup=true")) {
+		document.documentElement.style = "width: 800px; height: 500px";
+	}
+}
+
+function init_default_listeners() {
+	setElSettingsListener();
+	setElLibraryListener();
+	setElSelectListener();
+	setElSessionlistener();
+	setElRulesListener();
+}
+
+async function init_user_data() {
+	const user_data = await local.get(null);
+
+	if (!Object.keys(user_data).length) {
+		await local.set(STORAGE_STRUCT);
+		return STORAGE_STRUCT;
+	}
+	return user_data;
+}
 
 async function init() {
-	// On start
-	initListeners();
+	popup_mode();
+	init_default_listeners();
 
-	let userdata = await local.get(null);
-	if (Object.keys(userdata).length === 0) {
-		userdata = STORAGE_STRUCT;
-		await local.set(STORAGE_STRUCT);
-	}
-	setCards(userdata);
+	const user_data = await init_user_data();
 
-	renderElLibrary(userdata, -1, -1); // Render library
-	renderElSelectModule(userdata);
-	renderElSession(); // Render session
+	setCards(user_data);
+
+	renderElRules(user_data);
+	renderElLibrary(user_data, -1, -1);
+	renderElSession(); // Depends on local variables
 
 	// On storage change
 	storage.onChanged.addListener(update);
@@ -42,7 +63,7 @@ async function update() {
 			renderElLibrary(userdata, moduleId, unitId);
 		}
 
-		renderElSelectModule(userdata);
+		renderElRules(userdata);
 		renderElSession(); // Render session
 
 		// END
@@ -56,13 +77,6 @@ async function update() {
 	// This is to avoid local.clear(); nasty logic
 	if (Object.keys(userdata).length !== 0) userdata.reason = "";
 	await local.set(userdata);
-}
-
-function initListeners() {
-	setElSettingsListener();
-	setElLibraryListener();
-	setElSelectListener();
-	setElSessionlistener();
 }
 
 init();

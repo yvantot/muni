@@ -1,5 +1,5 @@
 import { ELEMENTS, local } from "../utilities/global.js";
-import { cutString, getIndexes, getMaxNumber } from "../utilities/utilities.js";
+import { cutString, getIndexes, getLatestId } from "../utilities/utilities.js";
 import { getElModules } from "./modules.js";
 import { getElUnits } from "./units.js";
 import { getElCards } from "./cards.js";
@@ -26,13 +26,11 @@ export function setElLibraryListener() {
 
 		const currentNav = LIBRARY_CONTENTS.dataset.currentNav;
 		const moduleId = LIBRARY_CONTENTS.dataset.moduleId;
-		const unitId = LIBRARY_CONTENTS.dataset.unitId;
-		const { moduleIndex, unitIndex } = getIndexes(userdata, moduleId, unitId);
 
 		if (currentNav === "units") {
 			// Add new `unit`
-			let id = getMaxNumber(userdata.modules[moduleIndex].units.map((unit) => unit.id));
-			if (userdata.modules[moduleIndex].units.length !== 0) id += 1; // If 0, then 0 otherwise +1
+			const { moduleIndex } = getIndexes(userdata, moduleId);
+			let id = getLatestId(userdata.modules[moduleIndex].units);
 
 			userdata.modules[moduleIndex].units.push({
 				id,
@@ -49,27 +47,38 @@ export function setElLibraryListener() {
 			await local.set(userdata);
 		} else if (currentNav === "cards") {
 			// Add new card
-			let id = getMaxNumber(userdata.modules[moduleIndex].units[unitIndex].cards.map((card) => card.id));
-			if (userdata.modules[moduleIndex].units[unitIndex].cards.length !== 0) id += 1;
+			const unitId = LIBRARY_CONTENTS.dataset.unitId;
+			const { moduleIndex, unitIndex } = getIndexes(userdata, moduleId, unitId);
+			let id = getLatestId(userdata.modules[moduleIndex].units[unitIndex].cards);
 
-			userdata.reason = "update-card-structure";
+			const card_module = userdata.modules[moduleIndex];
+			const card_unit = userdata.modules[moduleIndex].units[unitIndex];
+
 			userdata.modules[moduleIndex].units[unitIndex].cards.push({
 				id,
 				type: "card",
 				card_type: "flashcard",
 				level: 1,
 				createdAt: String(new Date()),
-
+				isActive: card_module.isActive && card_unit.isActive,
 				isEditing: true,
+
+				moduleTitle: card_module.title,
+				moduleId: card_module.id,
+				unitTitle: card_unit.title,
+				unitId: card_unit.id,
+
 				front: "",
 				back: "",
+				keyword: "",
+				hint: "",
 			});
 
+			userdata.reason = "update-card-structure";
 			await local.set(userdata);
 		} else {
 			// Add new module
-			let id = getMaxNumber(userdata.modules.map((module) => module.id));
-			if (userdata.modules.length !== 0) id += 1;
+			let id = getLatestId(userdata.modules);
 
 			userdata.modules.push({
 				id,

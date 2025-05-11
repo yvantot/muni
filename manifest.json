@@ -7,7 +7,9 @@
     "homepage_url": "https://yvantot.github.io/main",
     "permissions": [
         "storage",
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "windows",
+        "tabs"
     ],
     "chrome_url_overrides": {
         "newtab": "./html/main.html"
@@ -24,12 +26,8 @@
             "run_at": "document_start"
         }
     ],
-    "background": {
-        "service_worker": "./js/main-bg.js",
-        "type": "module"
-    },
     "action": {
-        "default_popup": "./html/main.html",
+        "default_popup": "./html/main.html?popup=true",
         "default_title": "Muni"
     },
     "web_accessible_resources": [

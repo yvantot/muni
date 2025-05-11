@@ -1,24 +1,11 @@
 /* ONLY WHITE THEME BECAUSE IT NEEDS TO BE NOTICEABLE */
 /* 	When doing CSS in content script, always remember:
-	- Start with a clean state with: "all: initial", attached in your :host or &
+	- Start with a clean state with: "all: initial", attached in your :host or &, but it's not 100% solution, it still inherit some shit for unknown reasons on some sites
 	- Avoid using rem, or measurements that depends on root elements, instead use em
 	- Beware of CSS inheritance, your font should always be in unique name.
 	- Don't take unnecessary width that may disrupt user's experience
+	- Use custom elements. It's the only solution for CSS inheritance.
 */
-:host {
-	all: initial;
-	display: flex;
-	position: fixed;
-	top: 10px;
-	right: 50%;
-	justify-content: center;
-	transform: translateX(50%);
-	z-index: 9999999;
-	width: fit-content;
-	height: 35vh;
-	--border-color: hsla(0, 0%, 50%, 0.4);
-	--main-text-color: hsl(0, 0%, 10%);
-}
 *,
 *::before,
 *::after {
@@ -31,9 +18,24 @@
 	line-height: 1.7;
 	color: var(--main-text-color);
 	font-family: Muni-Montserrat, Arial, Helvetica, sans-serif;
-	font-size: clamp(0.8em, 16px, 1.3em);
+	font-size: 16px;
+	transform: none;
 	font-weight: normal;
 	font-style: normal;
+}
+:host {
+	all: initial;
+	display: flex;
+	position: fixed;
+	top: 10px;
+	right: 50%;
+	justify-content: center;
+	transform: translateX(50%);
+	z-index: 9999999;
+	width: fit-content;
+	min-height: 35vh;
+	--border-color: hsla(0, 0%, 50%, 0.4);
+	--main-text-color: hsl(0, 0%, 10%);
 }
 button,
 svg {
@@ -46,8 +48,8 @@ svg {
 	align-content: space-around;
 	border-radius: 1em;
 	box-shadow: 0px 3px 10px hsla(0, 0%, 0%, 0.8);
-	background: light-dark(hsl(0, 0%, 90%), hsl(0, 0%, 10%));
-	width: 40vw;
+	background: hsl(0, 0%, 95%);
+	min-width: 40vw;
 	overflow: hidden;
 	color: light-dark(hsl(0, 0%, 10%), hsl(0, 0%, 90%));
 	.info-container {
@@ -119,10 +121,34 @@ svg {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: space-around;
+	justify-content: space-between;
 	padding: 1em;
+
+	.info-container {
+		border-bottom: none;
+
+		.card-delete {
+			display: none;
+		}
+	}
+
+	.question-info {
+		display: none !important;
+	}
+
 	.card-edit {
+		display: grid;
+		grid-template-columns: repeat(1, 1fr);
+		gap: 1em;
 		padding: 0 2em;
 		width: 100%;
+
+		p {
+			color: hsl(0, 0%, 40%);
+			background-color: hsl(0, 0%, 80%);
+			border-bottom: 2px solid hsl(0, 0%, 60%);
+			padding: 0.2em;
+			border-radius: 0.3rem;
+		}
 	}
 }

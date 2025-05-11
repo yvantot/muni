@@ -17,7 +17,7 @@
 						<button id="library-feature" class="visiting-feature">
 							<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M240-80q-50 0-85-35t-35-85v-560q0-50 35-85t85-35h440v640H240q-17 0-28.5 11.5T200-200q0 17 11.5 28.5T240-160h520v-640h80v720H240Zm120-240h240v-480H360v480Zm-80 0v-480h-40q-17 0-28.5 11.5T200-760v447q10-3 19.5-5t20.5-2h40Zm-80-480v487-487Z" /></svg>
 						</button>
-						<button id="statistic-feature">
+						<button id="statistic-feature" style="display: none !important">
 							<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z" /></svg>
 						</button>
 
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 			</section>
-			<section id="main-library" class="nav-features no-display">
+			<section id="main-library" class="nav-features">
 				<!-- HEADER -->
 				<div id="library-header" class="library-header">
 					<p class="library-title">Library</p>
@@ -68,29 +68,55 @@
 				</div>
 			</section>
 			<section id="main-statistic" class="nav-features no-display">Statistics</section>
-			<section id="main-rules" class="nav-features no-display">Rules</section>
-			<section id="main-ai" class="nav-features">
+			<section id="main-rules" class="nav-features no-display">
+				<div id="library-header" class="library-header">
+					<p class="library-title">Configure Rules</p>
+					<p class="library-current">Make yourself at home with customized Muni</p>
+				</div>
+				<div class="rule-contents">
+					<div class="rule-container">
+						<p class="rule-title">Show keyword</p>
+						<p class="rule-description">This allow you to memorize concepts by their keywords, helpful for identification exams</p>
+						<div class="rule-action">
+							<div class="rule-input" id="is-show-keyword">Disabled</div>
+							<button id="show-keyword">Toggle</button>
+						</div>
+					</div>
+					<div class="rule-container">
+						<p class="rule-title">Popup Time Interval</p>
+						<p class="rule-description">The time before another card popup again in minutes</p>
+						<div class="rule-action">
+							<div id="popup-time-input" class="rule-input" contenteditable="true"></div>
+							<button id="popup-time-set">Set</button>
+						</div>
+					</div>
+					<div class="rule-container">
+						<p class="rule-title">Popup Whitelist</p>
+						<p class="rule-description">Cards won't appear on sites listed here</p>
+						<div class="rule-action">
+							<div id="popup-whitelist-input" class="rule-input" contenteditable="true">www.toimplement.com, www.link.com</div>
+							<button id="popup-whitelist-set">Set</button>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section id="main-ai" class="nav-features no-display">
 				<div id="library-header" class="library-header">
 					<p class="library-title">Generate Cards</p>
 					<p class="library-current">Generate cards based on materials</p>
 				</div>
 				<div class="ai-contents">
 					<div class="select-generate-path">
-						<p>Modules</p>
-						<p>Units</p>
 						<p>Generate</p>
-						<select name="modules" id="select-module">
-							<option value="new">New</option>
-						</select>
-						<select name="units" id="select-unit">
-							<option value="new">New</option>
-						</select>
+						<p>Units count</p>
+						<p>Cards per unit</p>
 						<select name="units" id="select-method">
 							<option value="muni-note">Muni note</option>
 							<option value="ai-gpt">ChatGPT</option>
-							<option value="ai-deepseek">DeepSeek</option>
 							<option value="ai-gemini">Gemini</option>
 						</select>
+						<input type="number" id="unit-count" min="1" max="5" value="1" />
+						<input type="number" id="card-count" min="0" max="20" value="10" />
 					</div>
 					<button id="generate-card">Generate cards</button>
 					<div contenteditable="true" id="generate-input" class="generate-input">Input your study materials here or your Muni notes like the one below:<br /><br />-q What is Muni? <br />-a Muni is a reviewer app<br />-q Or in one line -a Like this</div>

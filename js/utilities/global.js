@@ -4,14 +4,6 @@ export const browser = chrome;
 export const storage = browser.storage;
 export const local = storage.local;
 
-export const CARDS = {
-	1: [],
-	2: [],
-	3: [],
-	4: [],
-	5: [],
-};
-
 // DEFAULT STORAGE STRUCTURE
 // This is used as the default storage structure for first-time installed
 export const STORAGE_STRUCT = {
@@ -24,6 +16,7 @@ export const STORAGE_STRUCT = {
 			settings: false,
 		},
 		rules: {
+			show_keyword: false,
 			intervalMs: 1000 * 5,
 		},
 	},
@@ -36,7 +29,7 @@ export const STORAGE_STRUCT = {
 		{
 			id: 0,
 			type: "module",
-			title: "Title",
+			title: "Module",
 			description: "Description",
 
 			author: "Author",
@@ -47,7 +40,7 @@ export const STORAGE_STRUCT = {
 				{
 					id: 0,
 					type: "unit",
-					title: "Title",
+					title: "Unit",
 					description: "Description",
 
 					createdAt: String(new Date()),
@@ -62,8 +55,15 @@ export const STORAGE_STRUCT = {
 							createdAt: String(new Date()),
 							isEditing: false,
 
-							front: "Front",
-							back: "Back",
+							moduleTitle: "Title",
+							unitTitle: "Title",
+							unitId: 0,
+							moduleId: 0,
+
+							front: "Question",
+							back: "Answer",
+							keyword: "Keyword",
+							hint: "Hint",
 						},
 						// {
 						// 	id: 1,
@@ -123,3 +123,22 @@ if (self.document) {
 		SESSION_LEVELS: document.getElementById("main-session").querySelectorAll(".card-levels span"),
 	};
 }
+
+class DefaultElements {
+	get_main_elements() {}
+	get_library_elements() {}
+	get_session_elements() {}
+	get_generate_elements() {}
+	get_rules_elements() {}
+	get_settings_elements() {
+		return {
+			LIBRARY: document.getElementById("main-library"),
+			STATISTIC: document.getElementById("main-statistic"),
+			RULES: document.getElementById("main-rules"),
+			AI: document.getElementById("main-ai"),
+			SETTINGS: document.getElementById("main-usersettings"),
+		};
+	}
+}
+
+export const elements = new DefaultElements();

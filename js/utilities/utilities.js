@@ -1,7 +1,27 @@
 export function getLatestId(array) {
+	// Expects modules, units, cards, not array of ids
 	let id = getMaxNumber(array.map((val) => val.id)) ?? 0;
 	if (array.length !== 0) id += 1;
 	return id;
+}
+
+// May cause code inconsistences
+export function create_element(name, attr) {
+	const element = document.createElement(name);
+
+	for (let key in attr) {
+		if (key === "dataset" && typeof attr[key] === "object") {
+			for (let data in attr.dataset) {
+				element.dataset[data] = attr.dataset[data];
+			}
+		} else if (key in element) {
+			element[key] = attr[key];
+		} else {
+			element.setAttribute(key, attr[key]);
+		}
+	}
+
+	return element;
 }
 
 export function getIndexes(userdata, moduleId = -1, unitId = -1, cardId = -1) {
