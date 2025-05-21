@@ -1,6 +1,6 @@
 // session.js
 import { ELEMENTS, local } from "../utilities/global.js";
-import { getIndexes, isEmptyStr, cutString, create_element } from "../utilities/utilities.js";
+import { getIndexes, isEmptyStr, cutString, create_element, calculate_next_review } from "../utilities/utilities.js";
 
 const BUTTONS = {
 	SHUFFLE: document.getElementById("shuffle-cards"),
@@ -41,26 +41,51 @@ export function setCards(userdata) {
 	updateElCardLevels();
 }
 
-function getToDisplayCard() {
-	const level_one_chance = CARDS[1].length ? new Array(3 ** 5).fill(1) : [];
-	const level_two_chance = CARDS[2].length ? new Array(3 ** 4).fill(2) : [];
-	const level_three_chance = CARDS[3].length ? new Array(3 ** 3).fill(3) : [];
-	const level_four_chance = CARDS[4].length ? new Array(3 ** 2).fill(4) : [];
-	const level_five_chance = CARDS[5].length ? new Array(3).fill(5) : [];
+async function getToDisplayCard() {
+	const userdata = await local.get(null);
+	const learning_mode = userdata.settings.rules.learning_mode;
+	if (learning_mode === "short") {
+		const level_one_chance = CARDS[1].length ? new Array(3 * CARDS[1].length).fill(1) : []; // Amplify the chance of low level cards
+		const level_two_chance = CARDS[2].length ? new Array(2 * CARDS[2].length).fill(2) : [];
+		const level_three_chance = CARDS[3].length ? new Array(CARDS[3].length).fill(3) : [];
+		const level_four_chance = CARDS[4].length ? new Array(CARDS[4].length).fill(4) : [];
+		const level_five_chance = CARDS[5].length ? new Array(CARDS[5].length).fill(5) : [];
 
-	const probability = [level_one_chance, level_two_chance, level_three_chance, level_four_chance, level_five_chance].flat();
-	console.log(probability);
+		const probability = [level_one_chance, level_two_chance, level_three_chance, level_four_chance, level_five_chance].flat();
 
-	// Yes, I know. This system has became way too shit. It's a workaround for my renderer
-	if (probability.length === 0) return { card: null, key: null };
+		// Yes, I know. This system has became way too shit. It's a workaround for my renderer
+		if (probability.length === 0) return { card: null, key: null };
 
-	const get_random_level = probability[Math.floor(Math.random() * probability.length)];
+		const get_random_level = probability[Math.floor(Math.random() * probability.length)];
 
-	const card = CARDS[get_random_level][0] !== undefined ? CARDS[get_random_level][0] : null;
+		const card = CARDS[get_random_level][0] !== undefined ? CARDS[get_random_level][0] : null;
 
-	if (card) {
-		return { card, key: get_random_level };
-	} else return { card: null, key: null };
+		if (card) {
+			return { card, key: get_random_level };
+		} else return { card: null, key: null };
+	} else if (learning_mode === "long") {
+		const { modules } = userdata;
+
+		for (let i = 0; i < modules.length; i++) {
+			if (!modules[i].isActive) continue;
+
+			const units = modules[i].units;
+			for (let j = 0; j < units.length; j++) {
+				if (!units[j].isActive) continue;
+
+				const cards = units[j].cards;
+				const now = new Date();
+				for (let k = 0; k < cards.length; k++) {
+					const card = cards[k];
+					if (now >= new Date(card.next_review)) {
+						return { card };
+					}
+				}
+			}
+		}
+
+		return { card: null };
+	}
 }
 
 function updateElCardLevels() {
@@ -71,11 +96,11 @@ function updateElCardLevels() {
 	ELEMENTS.SESSION_LEVELS[4].innerText = CARDS[5].length;
 }
 
-export function renderElSession() {
-	const { card, key } = getToDisplayCard();
+export async function renderElSession() {
+	const { card, key } = await getToDisplayCard();
 	ELEMENTS.SESSION_CONTENTS.innerHTML = "";
 	if (card !== null) {
-		ELEMENTS.SESSION_CONTENTS.appendChild(getElSessCard(card, key));
+		ELEMENTS.SESSION_CONTENTS.appendChild(await getElSessCard(card, key));
 	}
 	updateElCardLevels();
 }
@@ -106,66 +131,159 @@ export function setElSessionlistener() {
 	});
 }
 
-function setElSessCardListener(container, moduleId, unitId, cardId, key) {
+function setElSessCardListener(container, moduleId, unitId, cardId, key = null) {
 	const card_level_action = container.querySelector(".card-flashcard-action");
 
 	card_level_action?.addEventListener("click", async (event) => {
+		if (event.target.nodeName === "DIV") return;
 		const target = event.target.closest("button");
 
-		switch (parseInt(target.dataset.grade)) {
-			case 1: {
-				// You don't know the answer at all
-				// Move it to the lowest level, and just before the front
+		const userdata = await local.get(null);
+		const learning_mode = userdata.settings.rules.learning_mode;
+		const { moduleIndex, unitIndex, cardIndex } = getIndexes(userdata, moduleId, unitId, cardId);
 
-				// TODO !NOT FINISHED!
+		if (learning_mode === "short") {
+			switch (parseInt(target.dataset.grade)) {
+				case 1: {
+					// You don't know the answer at all
+					// Move it to the lowest level, and just before the front
 
-				if (CARDS[key][0].level === 1) return;
+					if (CARDS[key][0].level === 1) return;
 
-				const userdata = await local.get(null);
-				const { moduleIndex, unitIndex, cardIndex } = getIndexes(userdata, moduleId, unitId, cardId);
-				userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].level = 1;
-				const card = userdata.modules[moduleIndex].units[unitIndex].cards.splice(cardIndex, 1)[0];
-				userdata.modules[moduleIndex].units[unitIndex].cards.unshift(card);
+					// Delete the card to update its position
+					const card = CARDS[key].splice(0, 1)[0];
+					const first_card = CARDS[1].shift();
+					card.level = 1;
 
-				userdata.inject.answered = true;
-				userdata.inject.time = String(new Date());
-				await local.set(userdata);
+					// [ front ] -> removed
 
-				CARDS[key][0].level = 1;
-				CARDS[1].unshift(CARDS[key][0]);
-				CARDS[key].splice(0, 1); // Delete the card from its current level
+					// [ front ] -> insert 1
+					// [current] -> insert 0
+					CARDS[1].unshift(card);
+					if (first_card !== undefined) CARDS[1].unshift(first_card);
 
-				renderElSession();
-				updateElCardLevels();
-				break;
+					userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].level = card.level;
+
+					renderElSession();
+					updateElCardLevels();
+					await local.set(userdata);
+					break;
+				}
+				case 2: {
+					// Wrong answer, but the answer seems familiar
+					// Move it to the lower level, and at the back
+
+					// Delete the card to update its position
+					const card = CARDS[key].splice(0, 1)[0];
+					card.level = Math.max(card.level - 1, 1);
+					CARDS[card.level].push(card);
+
+					userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].level = card.level;
+
+					renderElSession();
+					updateElCardLevels();
+					await local.set(userdata);
+					break;
+				}
+				case 3: {
+					// Correct answer but slightly incorrect, it took a lot of thinking
+					// Move it to the higher level, and at the front
+
+					if (CARDS[key].length === 0) return;
+					const card = CARDS[key].splice(0, 1)[0];
+					card.level += 1;
+
+					userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].level = card.level; // Storage change state
+
+					if (card.level <= 5) {
+						CARDS[card.level].unshift(card);
+					}
+
+					renderElSession();
+					updateElCardLevels();
+					await local.set(userdata);
+					break;
+				}
+				case 4: {
+					// Correct answer but with hesitation
+					// Move it to the higher level, and at the back
+
+					if (CARDS[key].length === 0) return;
+					const card = CARDS[key].splice(0, 1)[0];
+					card.level += 1;
+
+					userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].level = card.level; // Storage change state
+
+					if (card.level <= 5) CARDS[card.level].push(card);
+
+					renderElSession();
+					updateElCardLevels();
+					await local.set(userdata);
+					break;
+				}
+				case 5: {
+					// Correct answer with confidence
+					// Move it to the higher level 2 times, and at the back
+
+					if (CARDS[key].length === 0) return;
+					const card = CARDS[key].splice(0, 1)[0];
+					card.level = Math.min(card.level + 2, 6);
+
+					console.log(card, card.level);
+
+					userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].level = card.level; // Storage change state
+
+					if (card.level <= 5) CARDS[card.level].push(card);
+
+					renderElSession();
+					updateElCardLevels();
+					await local.set(userdata);
+					break;
+				}
 			}
-			case 2: {
-				// Wrong answer, but the answer seems familiar
-				// Move it to the lower level, and at the back
-				break;
+		} else if (learning_mode === "long") {
+			const grade = parseInt(target.dataset.grade);
+			const card = userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex];
+			switch (parseInt(target.dataset.grade)) {
+				case 1:
+				case 2: {
+					card.repetitions = 0;
+					card.interval = 1;
+					card.easiness = Math.max(1.3, card.easiness - 0.2);
+					break;
+				}
+				case 3:
+				case 4:
+				case 5: {
+					card.repetitions += 1;
+					if (card.repetitions === 1) {
+						card.interval = 1;
+					} else if (card.repetitions === 2) {
+						card.interval = 3;
+					} else {
+						card.interval = Math.round(card.interval * card.easiness);
+					}
+					card.easiness = Math.max(1.3, card.easiness + (0.1 - (4 - (grade - 1)) * (0.08 + (4 - (grade - 1)) * 0.02)));
+					break;
+				}
 			}
-			case 3: {
-				// Correct answer but slightly incorrect, it took a lot of thinking
-				// Move it to the higher level, and at the front
-				alert(1);
-				break;
-			}
-			case 4: {
-				// Correct answer but with hesitation
-				// Move it to the higher level, and at the back
-				break;
-			}
-			case 5: {
-				// Correct answer with confidence
-				// Move it to the higher level 2 times, and at the back
-				break;
-			}
+			card.next_review = calculate_next_review(card.interval);
+
+			userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex] = card;
+			await local.set(userdata);
 		}
+	});
+
+	container.querySelector(".show-hint")?.addEventListener("click", () => {
+		const hint = document.querySelector(".hint");
+		hint.classList.toggle("no-display");
 	});
 
 	container.querySelector(".edit-button")?.addEventListener("click", async () => {
 		const front = container.querySelector(".front");
 		const back = container.querySelector(".back");
+		const keyword = container.querySelector(".keyword");
+		const hint = container.querySelector(".hint");
 
 		if (isEmptyStr(front.innerText) || isEmptyStr(back.innerText)) {
 			alert("Please finish editing");
@@ -175,13 +293,19 @@ function setElSessCardListener(container, moduleId, unitId, cardId, key) {
 			const { moduleIndex, unitIndex, cardIndex } = getIndexes(userdata, moduleId, unitId, cardId);
 			userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].front = front.innerText;
 			userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].back = back.innerText;
+			userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].keyword = keyword.innerText;
+			userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].hint = hint.innerText;
 
 			userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].isEditing = false; // Storage change state
 
 			// Temporary variable change state
-			CARDS[key][0].isEditing = !CARDS[key][0].isEditing;
-			CARDS[key][0].front = front.innerText;
-			CARDS[key][0].back = back.innerText;
+			if (key !== null) {
+				CARDS[key][0].isEditing = !CARDS[key][0].isEditing;
+				CARDS[key][0].front = front.innerText;
+				CARDS[key][0].back = back.innerText;
+				CARDS[key][0].keyword = keyword.innerText;
+				CARDS[key][0].hint = hint.innerText;
+			}
 
 			await local.set(userdata);
 		}
@@ -191,33 +315,13 @@ function setElSessCardListener(container, moduleId, unitId, cardId, key) {
 		target = target.closest(".card-info");
 		const front = target.children[0];
 		const back = target.children[1];
-		const keyword = target.children[2];
+		const hint = target.children[2];
+		const keyword = target.children[3];
 
 		back.classList.toggle("no-display");
 		front.classList.toggle("no-display");
+		hint.classList.add("no-display");
 		if (document.getElementById("is-show-keyword").dataset.enabled == true) keyword.classList.toggle("no-display");
-	});
-
-	container.querySelector(".card-forward")?.addEventListener("click", async () => {
-		if (CARDS[key].length === 0) return;
-
-		CARDS[key][0].level += 1;
-
-		const userdata = await local.get(null);
-		const { moduleIndex, unitIndex, cardIndex } = getIndexes(userdata, moduleId, unitId, cardId);
-		userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].level = CARDS[key][0].level; // Storage change state
-		await local.set(userdata);
-
-		if (CARDS[key][0].level > 5) {
-			CARDS[key].splice(0, 1); // This card is done
-		} else {
-			// Temporay variable change state
-			CARDS[key + 1].push(CARDS[key][0]); // Move the card to higher level
-			CARDS[key].splice(0, 1); // Delete the card from its current level
-		}
-
-		renderElSession();
-		updateElCardLevels();
 	});
 
 	container.querySelector(".edit-info").addEventListener("click", async () => {
@@ -225,8 +329,10 @@ function setElSessCardListener(container, moduleId, unitId, cardId, key) {
 		const { moduleIndex, unitIndex, cardIndex } = getIndexes(userdata, moduleId, unitId, cardId);
 		const isEditing = userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].isEditing;
 		userdata.modules[moduleIndex].units[unitIndex].cards[cardIndex].isEditing = !isEditing; // Storage change state
-		CARDS[key][0].isEditing = !CARDS[key][0].isEditing; // Temporary variable change state
 
+		if (key !== null) {
+			CARDS[key][0].isEditing = !CARDS[key][0].isEditing; // Temporary variable change state
+		}
 		await local.set(userdata);
 	});
 
@@ -234,14 +340,16 @@ function setElSessCardListener(container, moduleId, unitId, cardId, key) {
 		const userdata = await local.get(null);
 		const { moduleIndex, unitIndex, cardIndex } = getIndexes(userdata, moduleId, unitId, cardId);
 		userdata.modules[moduleIndex].units[unitIndex].cards.splice(cardIndex, 1); // Storage change state
-		CARDS[key].splice(0, 1); // Temporary variable change state
+		if (key !== null) {
+			CARDS[key].splice(0, 1); // Temporary variable change state
+		}
 		await local.set(userdata);
 
 		updateElCardLevels();
 	});
 }
 
-function getElSessCard(card, key) {
+function getElSessCard(card, key = null) {
 	const { id, type, card_type, level, isEditing, moduleId, unitId, moduleTitle, unitTitle } = card;
 
 	const is_show_keyword = document.getElementById("is-show-keyword").dataset.enabled == true; // "0" == true IM LAZY NAHHH
@@ -293,8 +401,8 @@ function getElSessCard(card, key) {
 				<div class="${!isEditingInfo ? "card-info" : "card-edit"}">
 					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="question front ${isEditingInfo ? "editing" : ""}">${front}</p>
 					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="question back ${isEditingInfo ? "editing" : "no-display"}">${back}</p>					
-					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="keyword ${is_show_keyword ? "" : "no-display"} ${isEditingInfo ? "editing" : ""}">${keyword}</p>
-					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="hint no-display ${isEditingInfo ? "editing" : ""}">${hint}</p>
+					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="hint ${isEditingInfo ? "editing" : "no-display"}">${hint}</p>
+					<p contentEditable="${isEditingInfo ? "true" : "false"}" class="keyword ${is_show_keyword ? (isEditingInfo ? "editing" : "") : "no-display"} ${isEditingInfo ? "editing" : ""}">${keyword}</p>
 				</div>				
 				${isEditingInfo ? '<button class="edit-button"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></button>' : ""}
 				${!isEditingInfo ? cardAction : ""}

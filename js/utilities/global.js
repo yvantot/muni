@@ -16,8 +16,9 @@ export const STORAGE_STRUCT = {
 			settings: false,
 		},
 		rules: {
+			learning_mode: "short",
 			show_keyword: false,
-			intervalMs: 1000 * 5,
+			intervalMs: 60000 * 5,
 		},
 	},
 	reason: "", // Would be better if this in array for greater control
@@ -33,7 +34,7 @@ export const STORAGE_STRUCT = {
 			description: "Description",
 
 			author: "Author",
-			createdAt: String(new Date()),
+			createdAt: new Date().toISOString(),
 			isActive: true,
 			isEditing: false,
 			units: [
@@ -43,7 +44,7 @@ export const STORAGE_STRUCT = {
 					title: "Unit",
 					description: "Description",
 
-					createdAt: String(new Date()),
+					createdAt: new Date().toISOString(),
 					isActive: true,
 					isEditing: false,
 					cards: [
@@ -51,8 +52,7 @@ export const STORAGE_STRUCT = {
 							id: 0,
 							type: "card",
 							card_type: "flashcard",
-							level: 1, // If 6, then it's done
-							createdAt: String(new Date()),
+							createdAt: new Date().toISOString(),
 							isEditing: false,
 
 							moduleTitle: "Title",
@@ -64,6 +64,15 @@ export const STORAGE_STRUCT = {
 							back: "Answer",
 							keyword: "Keyword",
 							hint: "Hint",
+
+							// Short-term-mode
+							level: 1, // If 6, then it's done
+
+							// Long-term-mode
+							easiness: 2.5,
+							interval: 1,
+							repetitions: 0,
+							next_review: new Date().toISOString(),
 						},
 						// {
 						// 	id: 1,
@@ -124,6 +133,7 @@ if (self.document) {
 	};
 }
 
+// This is the better way, functions are only executed by the time they are called
 class DefaultElements {
 	get_main_elements() {}
 	get_library_elements() {}

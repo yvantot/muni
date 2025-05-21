@@ -22,8 +22,7 @@
             "matches": [
                 "<all_urls>"
             ],
-            "world": "ISOLATED",
-            "run_at": "document_start"
+            "world": "ISOLATED"
         }
     ],
     "action": {

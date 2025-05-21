@@ -1,22 +1,32 @@
 import { local } from "../utilities/global.js";
 import { getIndexes, getLatestId, create_element } from "../utilities/utilities.js";
+import { show_popup } from "../utilities/utilities.js";
 
 const GenerateElements = {
 	select_method: document.getElementById("select-method"),
+	unit_count: document.getElementById("unit-count"),
+	card_count: document.getElementById("card-count"),
+	generate_desc: document.querySelectorAll(".generate-count"),
 	generate_card: document.getElementById("generate-card"),
 	generate_input: document.getElementById("generate-input"),
 };
 
 export function setElSelectListener() {
-	const { select_method, generate_card, generate_input } = GenerateElements;
-
+	const { select_method, unit_count, card_count, generate_card, generate_input, generate_desc } = GenerateElements;
 	select_method.addEventListener("change", () => {
 		switch (select_method.value) {
 			case "muni-note":
+				unit_count.classList.add("no-display");
+				card_count.classList.add("no-display");
+				generate_desc.forEach((desc) => desc.classList.add("no-display"));
 				generate_input.innerHTML = "Input your study materials here or your Muni notes like the one below:<br /><br />-q What is Muni? <br />-a Muni is a reviewer app<br />-q Or in one line -a Like this";
 				break;
 			case "ai-gpt":
 			case "ai-gemini":
+				unit_count.closest(".select-generate-path").style = "grid-template-column:";
+				unit_count.classList.remove("no-display");
+				card_count.classList.remove("no-display");
+				generate_desc.forEach((desc) => desc.classList.remove("no-display"));
 				generate_input.innerHTML = "Input your materials or additional instructions (optional) here<br/><br/>Muni will do the rest ;)";
 				break;
 		}
@@ -27,8 +37,8 @@ export function setElSelectListener() {
 		const userdata = await local.get(null);
 		const method = select_method.value;
 
-		const unit_count = 3 || "1";
-		const cards_per_unit_count = 5 || "20";
+		const units_count = parseInt(unit_count.value) || 1;
+		const cards_per_unit_count = parseInt(card_count.value) || 10;
 
 		const user_topic = generate_input.innerText.replace("/[s]+/g", " ");
 
@@ -41,19 +51,25 @@ export function setElSelectListener() {
 			!cards!
 			!q=Question
 			!a=Answer
-			!k=Keyword
+			!k=Keyword of question should not spoil the answer
 			!h=Hint
+			!q=Q
+			!a=A
+			!k=K
+			!h=H
 			!unit!
+			!q=Q
+			!a=A
+			!k=K
+			!h=H
 			... continue
 		`;
 
 		const instruction = `
-		Create me flashcards based on provided format and topic. Make ${unit_count} units and ${cards_per_unit_count} cards per unit.
+		Create me flashcards based on provided format and topic. Make ${units_count} units and ${cards_per_unit_count} cards per unit.
 		
 		Format: ${format},
 		Topic: ${user_topic}`;
-
-		console.log("Instruction ", instruction);
 
 		switch (method) {
 			case "muni-note":
@@ -83,19 +99,19 @@ export function setElSelectListener() {
 						const { id } = window;
 						const tabId = window.tabs[0].id;
 
+						show_popup("Please wait for the newly popped-up window to close before you click anything. Thank you.", "I understand", { wait_before_exit_s: 5, bg: "hsl(50, 30%, 50%)", svg_icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="M280-420q25 0 42.5-17.5T340-480q0-25-17.5-42.5T280-540q-25 0-42.5 17.5T220-480q0 25 17.5 42.5T280-420Zm200 0q25 0 42.5-17.5T540-480q0-25-17.5-42.5T480-540q-25 0-42.5 17.5T420-480q0 25 17.5 42.5T480-420Zm200 0q25 0 42.5-17.5T740-480q0-25-17.5-42.5T680-540q-25 0-42.5 17.5T620-480q0 25 17.5 42.5T680-420ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>' });
+
 						if (method === "ai-gpt") {
 							setTimeout(() => {
-								chrome.tabs.sendMessage(tabId, { message: "scrape-gpt", instruction }, (response) => {
-									console.log(response);
+								chrome.tabs.sendMessage(tabId, { message: "scrape-gpt", instruction, id }, (response) => {
 									parse_response_to_cards(userdata, response.qa, "ai");
 									chrome.windows.remove(id);
 								});
 							}, 5000);
 						} else if (method === "ai-gemini") {
 							setTimeout(() => {
-								chrome.tabs.sendMessage(tabId, { message: "scrape-gemini", instruction }, (response) => {
+								chrome.tabs.sendMessage(tabId, { message: "scrape-gemini", instruction, id }, (response) => {
 									if (response.answer !== "") response.qa += " " + response.answer;
-									console.log(response);
 									parse_response_to_cards(userdata, response.qa, "ai");
 									chrome.windows.remove(id);
 								});
@@ -184,10 +200,20 @@ async function parse_response_to_cards(userdata, str, type) {
 
 				card.id = i;
 				card.type = "card";
+				card.keyword = "Keyword";
+				card.hint = "Hint";
 				card.card_type = "flashcard";
-				card.level = 1;
 				card.createdAt = String(new Date());
 				card.isEditing = false;
+
+				// Short-term-mode
+				card.level = 1;
+
+				// Long-term-mode
+				card.easiness = 2.5;
+				card.interval = 1;
+				card.repetitions = 0;
+				card.next_review = new Date().toISOString();
 			});
 			const new_module = {
 				id: module_id,
@@ -235,9 +261,17 @@ async function parse_response_to_cards(userdata, str, type) {
 					card.id = i;
 					card.type = "card";
 					card.card_type = "flashcard";
-					card.level = 1;
 					card.createdAt = String(new Date());
 					card.isEditing = false;
+
+					// Short-term-mode
+					card.level = 1;
+
+					// Long-term-mode
+					card.easiness = 2.5;
+					card.interval = 1;
+					card.repetitions = 0;
+					card.next_review = new Date().toISOString();
 				});
 			});
 			const new_module = {
@@ -258,8 +292,8 @@ async function parse_response_to_cards(userdata, str, type) {
 			break;
 		}
 	}
+	show_popup("Successfully created flashcards.", "Okay", { bg: "hsl(128, 30.20%, 50.00%)", svg_icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>' });
 	await local.set({
-		reason: "update-card-structure",
 		modules,
 	});
 }

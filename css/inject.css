@@ -6,6 +6,7 @@
 	- Don't take unnecessary width that may disrupt user's experience
 	- Use custom elements. It's the only solution for CSS inheritance.
 */
+
 *,
 *::before,
 *::after {
@@ -49,9 +50,12 @@ svg {
 	border-radius: 1em;
 	box-shadow: 0px 3px 10px hsla(0, 0%, 0%, 0.8);
 	background: hsl(0, 0%, 95%);
-	min-width: 40vw;
+	width: 30vw;
 	overflow: hidden;
 	color: light-dark(hsl(0, 0%, 10%), hsl(0, 0%, 90%));
+	.edit-button {
+		margin-top: 1rem;
+	}
 	.info-container {
 		display: flex;
 		justify-content: space-between;
@@ -73,25 +77,24 @@ svg {
 	}
 	.card-info {
 		display: flex;
-		flex-grow: 1;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		gap: 1rem;
 		cursor: pointer;
-		padding: 1.5em 2em;
+		padding: 1.5rem 2rem;
+		min-height: 200px;
 		p {
-			font-size: 1.5em;
+			font-size: 1.2em;
 			user-select: none;
 		}
-		.back {
-			display: none;
+		.keyword {
+			font-size: 0.9rem;
+			opacity: 0.5;
 		}
-		&:hover {
-			.front {
-				display: none;
-			}
-			.back {
-				display: block;
-			}
+		.hint {
+			color: hsl(224, 40%, 60%);
+			font-size: 1.2em;
 		}
 	}
 	.card-flashcard-action {
@@ -151,4 +154,7 @@ svg {
 			border-radius: 0.3rem;
 		}
 	}
+}
+.no-display {
+	display: none;
 }

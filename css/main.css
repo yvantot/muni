@@ -246,6 +246,7 @@ body {
 			color: hsla(0, 0%, 100%, 0.5);
 			font-size: 0.8rem;
 		}
+
 		.module-info {
 			display: flex;
 			justify-content: space-between;
@@ -333,6 +334,13 @@ body {
 				font-size: 0.9rem;
 			}
 		}
+		.library-next-review {
+			display: block;
+			font-weight: bold;
+			text-align: right;
+			color: var(--green);
+			font-size: 0.8rem;
+		}
 	}
 }
 .card-flashcard {
@@ -368,6 +376,10 @@ body {
 			position: absolute;
 			font-size: 1rem;
 			opacity: 0.8;
+		}
+		.hint {
+			color: var(--blue);
+			font-size: 1.3rem;
 		}
 	}
 	.card-flashcard-action {
@@ -506,6 +518,23 @@ body {
 				background-color: var(--card-color);
 				border-radius: 0.3rem;
 			}
+			label {
+				display: flex;
+				cursor: pointer;
+				align-items: center;
+				justify-content: space-between;
+				font-size: 0.8rem;
+				padding: 0.5rem;
+				flex-grow: 1;
+				background-color: var(--card-color);
+				border-radius: 0.3rem;
+				input {
+					visibility: hidden;
+				}
+				input:checked {
+					visibility: visible;
+				}
+			}
 		}
 	}
 }
@@ -584,4 +613,42 @@ body {
 }
 .color-level-5 {
 	color: var(--level-5);
+}
+.popup-message {
+	position: fixed;
+	padding: 3rem;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	min-width: 50vw;
+	min-height: 50vh;
+	border-radius: 1rem;
+	box-shadow: var(--card-shadow);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1rem;
+	align-items: center;
+
+	p {
+		user-select: none;
+		text-align: center;
+		font-size: clamp(0.8rem, 2vw, 1.3rem);
+	}
+	svg {
+		width: 30%;
+		height: 30%;
+	}
+	button {
+		font-size: clamp(0.8rem, 2vw, 1.3rem);
+		width: clamp(15ch, 50%, 30ch);
+		padding: 0.5rem;
+		border-radius: 0.5rem;
+		border: 1px solid hsla(0, 0%, 100%, 0.5);
+		box-shadow: 0px 10px 10px hsla(0, 0%, 10%, 0.2);
+		transition: transform 0.3s ease;
+	}
+	button:hover {
+		transform: scale(1.05, 1.05);
+	}
 }

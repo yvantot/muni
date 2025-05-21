@@ -58,7 +58,6 @@ export function setElLibraryListener() {
 				id,
 				type: "card",
 				card_type: "flashcard",
-				level: 1,
 				createdAt: String(new Date()),
 				isActive: card_module.isActive && card_unit.isActive,
 				isEditing: true,
@@ -72,9 +71,17 @@ export function setElLibraryListener() {
 				back: "",
 				keyword: "",
 				hint: "",
+
+				// Short-term-mode
+				level: 1,
+
+				// Long-term-mode
+				easiness: 2.5,
+				interval: 1,
+				repetitions: 0,
+				next_review: new Date().toISOString(),
 			});
 
-			userdata.reason = "update-card-structure";
 			await local.set(userdata);
 		} else {
 			// Add new module

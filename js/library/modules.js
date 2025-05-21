@@ -80,7 +80,6 @@ function setElModuleListener(container, moduleId, isEditingInfo) {
 				userdata.modules[moduleIndex].title = title.innerText;
 				userdata.modules[moduleIndex].description = description.innerText;
 				userdata.modules[moduleIndex].author = author.innerText;
-				userdata.reason = "update-card-structure";
 				await local.set(userdata);
 			}
 		});
@@ -92,7 +91,6 @@ function setElModuleListener(container, moduleId, isEditingInfo) {
 
 		const { moduleIndex } = getIndexes(userdata, moduleId);
 		userdata.modules.splice(moduleIndex, 1);
-		userdata.reason = "update-card-structure";
 
 		await local.set(userdata);
 	});
@@ -103,7 +101,6 @@ function setElModuleListener(container, moduleId, isEditingInfo) {
 
 		const { moduleIndex } = getIndexes(userdata, moduleId);
 		userdata.modules[moduleIndex].isActive = !userdata.modules[moduleIndex].isActive;
-		userdata.reason = "update-card-structure";
 		await local.set(userdata);
 	});
 

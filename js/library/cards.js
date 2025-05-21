@@ -1,6 +1,6 @@
 import { ELEMENTS, local } from "../utilities/global.js";
 
-import { getIndexes, isEmptyStr, dateToYYYYMMDD } from "../utilities/utilities.js";
+import { getIndexes, isEmptyStr, dateToYYYYMMDD, addPlural } from "../utilities/utilities.js";
 
 export function getElCards(cards) {
 	const container = document.createElement("div");
@@ -12,7 +12,8 @@ export function getElCards(cards) {
 }
 
 function getElCard(card) {
-	const { id, type, card_type, level, createdAt, isEditing } = card;
+	const { id, type, card_type, level, createdAt, isEditing, next_review } = card;
+
 	const container = document.createElement("div");
 
 	container.classList.add("library-card");
@@ -25,6 +26,7 @@ function getElCard(card) {
 			const { front, back } = card;
 			container.classList.add("library-flashcard");
 			const isEditingInfo = isEmptyStr(front) || isEmptyStr(back) || isEditing;
+			const appearing_in = new Date(next_review).getDate() - new Date().getDate();
 
 			container.innerHTML = `
                 <div class="library-card-toolbar">
@@ -41,8 +43,9 @@ function getElCard(card) {
                     <p contentEditable="${isEditingInfo ? "true" : "false"}" class="back ${isEditingInfo ? "editing" : ""}">${isEmptyStr(back) ? "Back" : back}</p>
                     <div>
                         <span class="library-card-createdAt">${dateToYYYYMMDD(new Date(createdAt))}</span>
-                        <span class="library-card-level">${level <= 5 ? "Level " + level : "Done"}</span>
+                        <span class="library-card-level">${level <= 5 ? "Level " + level : "Done"}</span>						
                     </div>
+					<span class="library-next-review">${appearing_in ? "In " + appearing_in + ` day${addPlural(appearing_in)}` : "Today"} </span>
                 </div>
             `;
 

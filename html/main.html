@@ -75,11 +75,18 @@
 				</div>
 				<div class="rule-contents">
 					<div class="rule-container">
-						<p class="rule-title">Show keyword</p>
-						<p class="rule-description">This allow you to memorize concepts by their keywords, helpful for identification exams</p>
+						<p class="rule-title">Learning Mode</p>
+						<p class="rule-description">- Short-term mode is for fast-learning but easy-to-forget (exams, quizzes...)</p>
+						<p class="rule-description">- Long-term mode is for slow-learning but hard-to-forget (language learning, concept mastery...)</p>
 						<div class="rule-action">
-							<div class="rule-input" id="is-show-keyword">Disabled</div>
-							<button id="show-keyword">Toggle</button>
+							<label for="short-term-learning"
+								>Short-term
+								<input type="radio" id="short-term-learning" name="learning-mode" checked />
+							</label>
+							<label for="long-term-learning"
+								>Long-term
+								<input type="radio" id="long-term-learning" name="learning-mode" />
+							</label>
 						</div>
 					</div>
 					<div class="rule-container">
@@ -91,6 +98,16 @@
 						</div>
 					</div>
 					<div class="rule-container">
+						<p class="rule-title">Show keyword</p>
+						<p class="rule-description">This allow you to memorize concepts by their keywords, helpful for identification exams</p>
+						<div class="rule-action">
+							<div class="rule-input" id="is-show-keyword">Disabled</div>
+							<button id="show-keyword">Toggle</button>
+						</div>
+					</div>
+
+					<!-- To implement -->
+					<div class="rule-container no-display">
 						<p class="rule-title">Popup Whitelist</p>
 						<p class="rule-description">Cards won't appear on sites listed here</p>
 						<div class="rule-action">
@@ -108,15 +125,15 @@
 				<div class="ai-contents">
 					<div class="select-generate-path">
 						<p>Generate</p>
-						<p>Units count</p>
-						<p>Cards per unit</p>
+						<p class="generate-count no-display">Units count</p>
+						<p class="generate-count no-display">Cards per unit</p>
 						<select name="units" id="select-method">
 							<option value="muni-note">Muni note</option>
 							<option value="ai-gpt">ChatGPT</option>
 							<option value="ai-gemini">Gemini</option>
 						</select>
-						<input type="number" id="unit-count" min="1" max="5" value="1" />
-						<input type="number" id="card-count" min="0" max="20" value="10" />
+						<input class="no-display" type="number" id="unit-count" min="1" max="5" value="1" />
+						<input class="no-display" type="number" id="card-count" min="0" max="20" value="10" />
 					</div>
 					<button id="generate-card">Generate cards</button>
 					<div contenteditable="true" id="generate-input" class="generate-input">Input your study materials here or your Muni notes like the one below:<br /><br />-q What is Muni? <br />-a Muni is a reviewer app<br />-q Or in one line -a Like this</div>
@@ -140,7 +157,7 @@
 					<div class="card card-multiple"></div> -->
 				</div>
 				<!-- LEVELS -->
-				<div class="card-levels">
+				<div class="card-levels invisible">
 					<span class="level-1">0</span>
 					<span class="level-2">0</span>
 					<span class="level-3">0</span>
