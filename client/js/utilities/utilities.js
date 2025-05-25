@@ -5,6 +5,23 @@ export function getLatestId(array) {
 	return id;
 }
 
+export function encode_b64(str) {
+	const bytes = new TextEncoder().encode(str);
+	const base64 = btoa(
+		Array.from(bytes)
+			.map((byte) => String.fromCharCode(byte))
+			.join("")
+	);
+	return base64;
+}
+
+export function decode_b64(b64) {
+	const binary = atob(b64);
+	const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+	const str = new TextDecoder().decode(bytes);
+	return str;
+}
+
 export function calculate_next_review(interval) {
 	const now = new Date();
 	const next_review_date = new Date(now);
@@ -31,55 +48,13 @@ export function create_element(name, attr) {
 	return element;
 }
 
-export function independent_show_popup(message, button_message, config) {
-	const existing_popup = document.getElementById("popup-message");
-	const existing_style = document.getElementById("popup-message-style");
-
-	if (existing_popup) existing_popup.remove();
-	if (existing_style) existing_style.remove();
-
-	const { wait_before_exit_s = 0, svg_icon = "", bg = "white" } = config;
-
-	const style = document.createElement("style");
-	const parent = document.createElement("div");
-
-	style.setAttribute("id", "popup-message-style");
-	parent.setAttribute("id", "popup-message");
-	parent.setAttribute("class", "popup-message");
-	parent.setAttribute("style", `background: ${bg};`);
-
-	style.innerHTML = `.popup-message,button{font-size:clamp(.8rem, 2vw, 1.3rem)}.popup-message{z-index:99999;position:fixed;padding:3rem;top:50%;left:50%;transform:translate(-50%,-50%);min-width:50vw;min-height:50vh;border-radius:1rem;box-shadow:var(--card-shadow);display:flex;flex-direction:column;justify-content:center;gap:1rem;align-items:center;text-align:center}svg{width:30%;height:30%}button{width:clamp(15ch,50%,30ch);padding:.5rem;border-radius:.5rem;border:1px solid hsla(0,0%,100%,.5);box-shadow:0 10px 10px hsla(0,0%,10%,.2);transition:transform .3s}button:hover{transform:scale(1.05,1.05)}`;
-	parent.innerHTML = `${svg_icon}<p>${message}</p><button>-</button>`;
-
-	const button = parent.querySelector("button");
-
-	let wait_counter_interval = null;
-	if (wait_before_exit_s > 0) {
-		let second = 0;
-		wait_counter_interval = setInterval(() => {
-			second += 1;
-			button.innerText = "Wait " + (wait_before_exit_s - second);
-		}, 1000);
-	}
-
-	setTimeout(() => {
-		clearInterval(wait_counter_interval);
-		button.innerText = button_message;
-		button.addEventListener("click", () => {
-			parent.remove();
-			style.remove();
-		});
-	}, wait_before_exit_s * 1000);
-
-	document.documentElement.appendChild(style);
-	document.documentElement.appendChild(parent);
-}
-
-export function show_popup(message, button_message, config) {
+export function show_popup(message, button_message = "Okay", config = {}) {
 	// Delete existing popup
 	document.getElementById("popup-message")?.remove();
 
-	const { wait_before_exit_s = 0, svg_icon = "", bg = "" } = config;
+	const successful_svg = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCCCCC"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>';
+
+	const { wait_before_exit_s = 0, svg_icon = successful_svg, bg = "hsl(128, 30.20%, 50.00%)" } = config;
 
 	// Create element
 	const parent = create_element("div", {

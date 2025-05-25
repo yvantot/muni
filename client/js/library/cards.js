@@ -45,7 +45,7 @@ function getElCard(card) {
                         <span class="library-card-createdAt">${dateToYYYYMMDD(new Date(createdAt))}</span>
                         <span class="library-card-level">${level <= 5 ? "Level " + level : "Done"}</span>						
                     </div>
-					<span class="library-next-review">${appearing_in ? "In " + appearing_in + ` day${addPlural(appearing_in)}` : "Today"} </span>
+					<span class="library-next-review">${appearing_in > 0 ? "In " + appearing_in + ` day${addPlural(appearing_in)}` : "Today"} </span>
                 </div>
             `;
 

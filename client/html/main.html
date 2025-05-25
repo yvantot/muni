@@ -139,7 +139,55 @@
 					<div contenteditable="true" id="generate-input" class="generate-input">Input your study materials here or your Muni notes like the one below:<br /><br />-q What is Muni? <br />-a Muni is a reviewer app<br />-q Or in one line -a Like this</div>
 				</div>
 			</section>
-			<section id="main-usersettings" class="nav-features no-display">Settings</section>
+			<section id="main-usersettings" class="nav-features no-display">
+				<div id="library-header" class="library-header">
+					<p class="library-title">Settings</p>
+					<p class="library-current">Manage your data</p>
+				</div>
+				<div class="rule-contents">
+					<div class="rule-container">
+						<p class="rule-title">Sync your account</p>
+						<p class="rule-description">Update your account-data with your current-data</p>
+						<div class="rule-action">
+							<input id="username-sync" class="rule-input" placeholder="Username" />
+							<input id="password-sync" class="rule-input" placeholder="Password" />
+							<button id="account-sync">Update</button>
+						</div>
+					</div>
+				</div>
+				<div class="rule-contents">
+					<div class="rule-container">
+						<p class="rule-title">Create an account</p>
+						<p class="rule-description">Write your current-data to this account</p>
+						<div class="rule-action">
+							<input id="username-create" class="rule-input" placeholder="Username" />
+							<input id="password-create" class="rule-input" placeholder="Password" />
+							<button id="account-create">Create</button>
+						</div>
+					</div>
+				</div>
+				<div class="rule-contents">
+					<div class="rule-container">
+						<p class="rule-title">Login to your account</p>
+						<p class="rule-description">Overwrite your current-data with your account data</p>
+						<div class="rule-action">
+							<input id="username-login" class="rule-input" placeholder="Username" />
+							<input id="password-login" class="rule-input" placeholder="Password" />
+							<button id="account-login">Login</button>
+						</div>
+					</div>
+				</div>
+				<div class="rule-contents">
+					<div class="rule-container">
+						<p class="rule-title">Import a module</p>
+						<p class="rule-description">Load a module into current-data</p>
+						<div class="rule-action">
+							<input type="file" id="module-file" accept=".muni" multiple />
+							<button id="module-import">Load</button>
+						</div>
+					</div>
+				</div>
+			</section>
 			<section id="main-session">
 				<!-- TOOLBAR QoL features-->
 				<div id="session-actions" class="session-actions">

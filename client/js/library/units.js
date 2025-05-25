@@ -5,7 +5,15 @@ import { renderElLibrary } from "./library.js";
 export function getElUnits(units) {
 	const container = document.createElement("div");
 	container.classList.add("units-container");
+	const inactive_unit = [];
 	units.forEach((unit) => {
+		if (unit.isActive) {
+			container.appendChild(getElUnit(unit));
+		} else {
+			inactive_unit.push(unit);
+		}
+	});
+	inactive_unit.forEach((unit) => {
 		container.appendChild(getElUnit(unit));
 	});
 	return container;
