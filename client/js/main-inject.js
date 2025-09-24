@@ -405,7 +405,6 @@ function createShadowDOM() {
 	link.href = chrome.runtime.getURL("css/inject.css");
 
 	document.head.appendChild(style);
-
 	root.appendChild(link);
 	return { host, root };
 }

@@ -1,20 +1,20 @@
 @font-face {
-	font-family: Montserrat;
-	src: url("./../assets/Montserrat.ttf") format("truetype");
+	font-family: Quicksand;
+	src: url("./../assets/Quicksand.ttf") format("truetype");
 }
 :root {
-	--bg-main-color: light-dark(hsl(0, 0%, 95%), hsl(0, 0%, 20%));
-	--bg-statistic-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
-	--bg-setting-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
-	--bg-session-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 10%));
+	--bg-main-color: light-dark(hsl(0, 0%, 95%), hsl(0, 0%, 15%));
+	--bg-statistic-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 5%));
+	--bg-setting-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 5%));
+	--bg-session-color: light-dark(hsl(0, 0%, 98%), hsl(0, 0%, 5%));
 	--text-main-color: light-dark(hsl(0, 0%, 10%), hsl(0, 0%, 90%));
-	--card-color: light-dark(hsl(0, 0%, 100%), hsl(219, 0%, 20%));
+	--card-color: light-dark(hsl(0, 0%, 100%), hsl(219, 0%, 15%));
 	--card-shadow: 0 5px 10px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 5%));
 	--confirm-edit-shadow: 0 10px 10px -5px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 5%));
 	--container-shadow: 0 10px 10px -5px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 5%));
 	--right-shadow: 5px 0 5px light-dark(hsl(0, 0%, 70%), hsl(0, 0%, 8%));
 	--card-border-top: 2px solid hsla(0, 0%, 100%, 0.5);
-	--module-color: light-dark(hsl(0, 0%, 100%), hsl(0, 0%, 20%));
+	--module-color: light-dark(hsl(0, 0%, 100%), hsl(0, 0%, 10%));
 	--gray-backdrop: hsla(0, 0%, 50%, 0.3);
 	--gray: hsla(0, 0%, 50%, 0.5);
 	--green: hsl(145, 40%, 60%);
@@ -33,6 +33,7 @@
 *,
 *::before,
 *::after {
+	scrollbar-width: thin;
 	box-sizing: border-box;
 	margin: 0;
 	outline: none;
@@ -41,7 +42,7 @@
 	padding: 0;
 	line-height: 1.7;
 	color: var(--text-main-color);
-	font-family: Montserrat, sans-serif;
+	font-family: Quicksand, sans-serif;
 	font-size: clamp(0.8rem, 16px, 1.3rem);
 	font-weight: normal;
 	font-style: normal;
@@ -98,6 +99,7 @@ body {
 	justify-content: space-between;
 	padding: 1.5rem 0;
 	height: 100%;
+
 	button {
 		display: flex;
 		align-items: center;
@@ -110,6 +112,7 @@ body {
 	}
 	.features {
 		display: flex;
+		gap: 0.5rem;
 		flex-direction: column;
 	}
 }
@@ -190,7 +193,10 @@ body {
 		font-weight: bold;
 	}
 	.library-current {
-		font-size: 0.8rem;
+		font-size: 0.9rem;
+	}
+	#library-current {
+		font-weight: bold;
 	}
 }
 .library-contents {
@@ -569,7 +575,7 @@ body {
 }
 .editing {
 	margin-bottom: 0.5rem;
-	padding: 0 0 !important;
+	padding: 0 0.5rem !important;
 	text-align: left;
 	font-size: 0.9rem !important;
 	font-weight: normal !important;
@@ -651,4 +657,9 @@ body {
 	button:hover {
 		transform: scale(1.05, 1.05);
 	}
+}
+.horizontal {
+	display: block;
+	border-top: 1px solid hsla(0, 0%, 50%, 0.1);
+	margin: 0.5rem 1rem;
 }

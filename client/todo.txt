@@ -1,33 +1,21 @@
-Muni
-
-BUGS
---> When user added multiple modules/units/cards unedited and try to batch-edit, the update logic will turn other inputs to a placeholder
-    This can be easily fixed with 'reason' rendering logic.
-
 FINISHED
 - Module System
 - Session mode
-
-TO WORK ON
 - Works as tab/newtab/popup
 - Hover or click to reveal answer
 - Allow hints feature
-- Tags
-- SVG globals
 - User settings
-- Question Popup (only flashcard for now) must work for focused & unfocused window
-
 - AI Prompt for automated q/a input
 - Q/A input syntax
 - Custom rules when popup will appear
-
-- To implement
 - Export/Import data
-- PWA support
-- Different type of questions support, images, links support
-- Text-editor
-- Stats visualization
-- Website support (local storage)
 
-- on Storage change should have a reason property to make rendering more flexible
-- Make code modular
+- Different type of questions support, images, links support
+- Stats visualization
+
+function* idGenerator() {
+    let id = 0; // Get the max ID from data storage, means this only need to run once
+    while (true) {
+        yield id++;
+    }
+}

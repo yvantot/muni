@@ -297,3 +297,9 @@ async function parse_response_to_cards(userdata, str, type) {
 		modules,
 	});
 }
+
+(() => {
+	// Archive All Chats
+	document.querySelectorAll('div[aria-label*="More options"]').forEach((a) => a.click());
+	setTimeout(() => document.querySelectorAll('path[d="M8 7.5a1 1 0 00-1 1V10a1 1 0 001 1h20a1 1 0 001-1V8.5a1 1 0 00-1-1H8z"]').forEach((b) => b.closest("div[aria-labelledby]").click()), 3000);
+})();

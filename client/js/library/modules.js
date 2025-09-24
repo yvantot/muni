@@ -68,7 +68,10 @@ function getElModule(module) {
 function setElModuleListener(container, moduleId, isEditingInfo) {
 	// Forward
 	container.querySelector(".forward-button").addEventListener("click", async () => {
-		if (isEditingInfo) return;
+		if (isEditingInfo) {
+			alert("Please finish editing");
+			return;
+		}
 
 		const userdata = await local.get(null);
 		ELEMENTS.LIBRARY_CONTENTS.dataset.currentNav = "units";

@@ -24,8 +24,10 @@
 	font-weight: normal;
 	font-style: normal;
 }
-:host {
+#muni-main {
 	all: initial;
+}
+:host {
 	display: flex;
 	position: fixed;
 	top: 10px;
